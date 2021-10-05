@@ -1,0 +1,15 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-yedselfservicecs-dev-155618-authRole",
+      "UnauthRoleArn": "arn:aws:iam::764504484168:role/amplify-yedselfservicecs-dev-155618-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::764504484168:role/amplify-yedselfservicecs-dev-155618-authRole",
+      "Region": "us-west-2",
+      "DeploymentBucketName": "amplify-yedselfservicecs-dev-155618-deployment",
+      "UnauthRoleName": "amplify-yedselfservicecs-dev-155618-unauthRole",
+      "StackName": "amplify-yedselfservicecs-dev-155618",
+      "StackId": "arn:aws:cloudformation:us-west-2:764504484168:stack/amplify-yedselfservicecs-dev-155618/b2456750-261e-11ec-9a5f-0a93d345b715",
+      "AmplifyAppId": "d1zii60ffakcy3"
+    }
+  }
+}

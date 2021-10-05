@@ -1,0 +1,35 @@
+{
+  "paths": [
+    {
+      "name": "/yed",
+      "lambdaFunction": "yedselfservicecs",
+      "privacy": {
+        "open": true
+      },
+      "policyResourceName": "/yed"
+    }
+  ],
+  "resourceName": "yedselfservicelambda",
+  "apiName": "yedselfservicelambda",
+  "functionArns": [
+    {
+      "lambdaFunction": "yedselfservicecs"
+    }
+  ],
+  "privacy": {
+    "auth": 0,
+    "unauth": 0,
+    "authRoleName": "amplify-yedselfservicecs-dev-155618-authRole",
+    "unAuthRoleName": "amplify-yedselfservicecs-dev-155618-unauthRole"
+  },
+  "dependsOn": [
+    {
+      "category": "function",
+      "resourceName": "yedselfservicecs",
+      "attributes": [
+        "Name",
+        "Arn"
+      ]
+    }
+  ]
+}
