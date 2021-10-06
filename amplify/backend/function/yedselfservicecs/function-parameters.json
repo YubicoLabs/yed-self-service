@@ -1,3 +1,13 @@
 {
-  "lambdaLayers": []
+  "lambdaLayers": [],
+  "secretNames": [
+    "yedtoken",
+    "yedcookie"
+  ],
+  "environmentVariableList": [
+    {
+      "cloudFormationParameterName": "yedurl",
+      "environmentVariableName": "yedurl"
+    }
+  ]
 }

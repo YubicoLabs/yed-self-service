@@ -10,6 +10,16 @@
       "StackName": "amplify-yedselfservicecs-dev-155618",
       "StackId": "arn:aws:cloudformation:us-west-2:764504484168:stack/amplify-yedselfservicecs-dev-155618/b2456750-261e-11ec-9a5f-0a93d345b715",
       "AmplifyAppId": "d1zii60ffakcy3"
+    },
+    "categories": {
+      "function": {
+        "yedselfservicecs": {
+          "secretsPathAmplifyAppId": "d1zii60ffakcy3",
+          "deploymentBucketName": "amplify-yedselfservicecs-dev-155618-deployment",
+          "s3Key": "amplify-builds/yedselfservicecs-72386c56616f31322f32-build.zip",
+          "yedurl": "https://api.console.stage.yubico.com/v1/"
+        }
+      }
     }
   }
 }
