@@ -1,26 +1,32 @@
 {
   "function": {
-    "yedselfservicecs": {
+    "yedselfsvcex": {
       "build": true,
       "providerPlugin": "awscloudformation",
-      "service": "Lambda",
-      "dependsOn": []
+      "service": "Lambda"
     }
   },
   "api": {
-    "yedselfservicelambda": {
+    "yedselfsvcex": {
       "service": "API Gateway",
       "providerPlugin": "awscloudformation",
       "dependsOn": [
         {
           "category": "function",
-          "resourceName": "yedselfservicecs",
+          "resourceName": "yedselfsvcex",
           "attributes": [
             "Name",
             "Arn"
           ]
         }
       ]
+    }
+  },
+  "hosting": {
+    "amplifyhosting": {
+      "service": "amplifyhosting",
+      "providerPlugin": "awscloudformation",
+      "type": "manual"
     }
   }
 }

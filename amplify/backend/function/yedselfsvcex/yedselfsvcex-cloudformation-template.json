@@ -19,15 +19,7 @@
     "secretsPathAmplifyAppId": {
       "Type": "String"
     },
-    "apiyedselfservicelambdaApiName": {
-      "Type": "String",
-      "Default": "apiyedselfservicelambdaApiName"
-    },
-    "apiyedselfservicelambdaApiId": {
-      "Type": "String",
-      "Default": "apiyedselfservicelambdaApiId"
-    },
-    "yedurl": {
+    "yedApiUrl": {
       "Type": "String"
     }
   },
@@ -61,12 +53,12 @@
         "FunctionName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "yedselfservicecs",
+            "yedselfsvcex",
             {
               "Fn::Join": [
                 "",
                 [
-                  "yedselfservicecs",
+                  "yedselfsvcex",
                   "-",
                   {
                     "Ref": "env"
@@ -84,7 +76,7 @@
             "REGION": {
               "Ref": "AWS::Region"
             },
-            "yedtoken": {
+            "YED_API_TOKEN": {
               "Fn::Join": [
                 "",
                 [
@@ -98,15 +90,18 @@
                         "env": {
                           "Ref": "env"
                         },
-                        "functionName": "yedselfservicecs"
+                        "functionName": "yedselfsvcex"
                       }
                     ]
                   },
-                  "yedtoken"
+                  "YED_API_TOKEN"
                 ]
               ]
             },
-            "yedcookie": {
+            "YED_API_URL": {
+              "Ref": "yedApiUrl"
+            },
+            "YED_COOKIE": {
               "Fn::Join": [
                 "",
                 [
@@ -120,22 +115,13 @@
                         "env": {
                           "Ref": "env"
                         },
-                        "functionName": "yedselfservicecs"
+                        "functionName": "yedselfsvcex"
                       }
                     ]
                   },
-                  "yedcookie"
+                  "YED_COOKIE"
                 ]
               ]
-            },
-            "API_YEDSELFSERVICELAMBDA_APINAME": {
-              "Ref": "apiyedselfservicelambdaApiName"
-            },
-            "API_YEDSELFSERVICELAMBDA_APIID": {
-              "Ref": "apiyedselfservicelambdaApiId"
-            },
-            "yedurl": {
-              "Ref": "yedurl"
             }
           }
         },
@@ -156,12 +142,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "yedselfservicecsLambdaRolec24d83df",
+            "yedselfservicecsLambdaRole2a6b94c2",
             {
               "Fn::Join": [
                 "",
                 [
-                  "yedselfservicecsLambdaRolec24d83df",
+                  "yedselfservicecsLambdaRole2a6b94c2",
                   "-",
                   {
                     "Ref": "env"
@@ -273,7 +259,7 @@
                           "env": {
                             "Ref": "env"
                           },
-                          "functionName": "yedselfservicecs"
+                          "functionName": "yedselfsvcex"
                         }
                       ]
                     },
@@ -288,55 +274,6 @@
       "DependsOn": [
         "LambdaExecutionRole"
       ]
-    },
-    "AmplifyResourcesPolicy": {
-      "DependsOn": [
-        "LambdaExecutionRole"
-      ],
-      "Type": "AWS::IAM::Policy",
-      "Properties": {
-        "PolicyName": "amplify-lambda-execution-policy",
-        "Roles": [
-          {
-            "Ref": "LambdaExecutionRole"
-          }
-        ],
-        "PolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Effect": "Allow",
-              "Action": [
-                "apigateway:POST",
-                "apigateway:PUT",
-                "apigateway:GET",
-                "apigateway:HEAD",
-                "apigateway:OPTIONS",
-                "apigateway:PATCH",
-                "apigateway:DELETE"
-              ],
-              "Resource": [
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:apigateway:",
-                      {
-                        "Ref": "AWS::Region"
-                      },
-                      "::/restapis/",
-                      {
-                        "Ref": "apiyedselfservicelambdaApiName"
-                      },
-                      "/*"
-                    ]
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      }
     }
   },
   "Outputs": {

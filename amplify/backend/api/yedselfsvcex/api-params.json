@@ -1,0 +1,59 @@
+{
+  "paths": [
+    {
+      "name": "/inventory",
+      "lambdaFunction": "yedselfsvcex",
+      "privacy": {
+        "open": true
+      },
+      "policyResourceName": "/inventory"
+    },
+    {
+      "name": "/address",
+      "lambdaFunction": "yedselfsvcex",
+      "privacy": {
+        "open": true
+      },
+      "policyResourceName": "/address"
+    },
+    {
+      "name": "/orders",
+      "lambdaFunction": "yedselfsvcex",
+      "privacy": {
+        "open": true
+      },
+      "policyResourceName": "/orders"
+    },
+    {
+      "name": "/order/{isbn}",
+      "lambdaFunction": "yedselfsvcex",
+      "privacy": {
+        "open": true
+      },
+      "policyResourceName": "/order/*"
+    }
+  ],
+  "resourceName": "yedselfsvcex",
+  "apiName": "yedselfsvcex",
+  "functionArns": [
+    {
+      "lambdaFunction": "yedselfsvcex"
+    }
+  ],
+  "privacy": {
+    "auth": 0,
+    "unauth": 0,
+    "authRoleName": "amplify-yedselfservicecs-dev-155618-authRole",
+    "unAuthRoleName": "amplify-yedselfservicecs-dev-155618-unauthRole"
+  },
+  "dependsOn": [
+    {
+      "category": "function",
+      "resourceName": "yedselfsvcex",
+      "attributes": [
+        "Name",
+        "Arn"
+      ]
+    }
+  ]
+}

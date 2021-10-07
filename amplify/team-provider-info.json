@@ -12,12 +12,18 @@
       "AmplifyAppId": "d1zii60ffakcy3"
     },
     "categories": {
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "d1zii60ffakcy3",
+          "type": "manual"
+        }
+      },
       "function": {
-        "yedselfservicecs": {
-          "secretsPathAmplifyAppId": "d1zii60ffakcy3",
+        "yedselfsvcex": {
           "deploymentBucketName": "amplify-yedselfservicecs-dev-155618-deployment",
-          "s3Key": "amplify-builds/yedselfservicecs-72386c56616f31322f32-build.zip",
-          "yedurl": "https://api.console.stage.yubico.com/v1/"
+          "s3Key": "amplify-builds/yedselfsvcex-382f786272465a54467a-build.zip",
+          "secretsPathAmplifyAppId": "d1zii60ffakcy3",
+          "yedApiUrl": "https://api.console.stage.yubico.com/v1"
         }
       }
     }
