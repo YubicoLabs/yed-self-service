@@ -1,3 +1,17 @@
+/*
+Use the following code to retrieve configured secrets from SSM:
+
+const aws = require('aws-sdk');
+
+const { Parameters } = await (new aws.SSM())
+  .getParameters({
+    Names: ["YED_API_TOKEN","YED_COOKIE"].map(secretName => process.env[secretName]),
+    WithDecryption: true,
+  })
+  .promise();
+
+Parameters will be of the form { Name: 'secretName', Value: 'secretValue', ... }[]
+*/
 const aws = require('aws-sdk');
 const axios = require('axios');
 
@@ -62,9 +76,6 @@ exports.handler = async (event) => {
 
   let body;
   let statusCode = 200;
-  const headers = {
-    "Content-Type": "application/json"
-  };
 
   YED_API_TOKEN = Parameters[0]['Value'];
   YED_COOKIE = Parameters[1]['Value']; //Yubico only value needed for bypassing proxy
@@ -118,13 +129,12 @@ exports.handler = async (event) => {
 
   const response = {
     statusCode: statusCode,
-    //  Uncomment below to enable CORS requests
-    //  headers: {
-    //      "Access-Control-Allow-Origin": "*",
-    //      "Access-Control-Allow-Headers": "*"
-    //  },
-    body: body,
-    headers: headers,
+    headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Headers": "*",
+          "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT"
+    },
+    body: body
   };
   return response;
 };

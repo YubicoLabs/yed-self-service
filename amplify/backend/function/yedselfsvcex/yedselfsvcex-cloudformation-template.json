@@ -98,9 +98,6 @@
                 ]
               ]
             },
-            "YED_API_URL": {
-              "Ref": "yedApiUrl"
-            },
             "YED_COOKIE": {
               "Fn::Join": [
                 "",
@@ -122,6 +119,9 @@
                   "YED_COOKIE"
                 ]
               ]
+            },
+            "YED_API_URL": {
+              "Ref": "yedApiUrl"
             }
           }
         },

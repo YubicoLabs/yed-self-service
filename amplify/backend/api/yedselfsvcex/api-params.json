@@ -1,59 +1,76 @@
 {
-  "paths": [
-    {
-      "name": "/inventory",
-      "lambdaFunction": "yedselfsvcex",
-      "privacy": {
-        "open": true
-      },
-      "policyResourceName": "/inventory"
+    "paths": [
+        {
+            "name": "/address",
+            "lambdaFunction": "yedselfsvcex",
+            "privacy": {
+                "open": true
+            },
+            "policyResourceName": "/address"
+        },
+        {
+            "name": "/orders",
+            "lambdaFunction": "yedselfsvcex",
+            "privacy": {
+                "open": true
+            },
+            "policyResourceName": "/orders"
+        },
+        {
+            "name": "/order/{isbn}",
+            "lambdaFunction": "yedselfsvcex",
+            "privacy": {
+                "open": true
+            },
+            "policyResourceName": "/order/*"
+        },
+        {
+            "name": "/inventory",
+            "lambdaFunction": "yedselfsvcex",
+            "privacy": {
+                "open": true
+            },
+            "policyResourceName": "/inventory"
+        },
+        {
+            "name": "/authtest",
+            "lambdaFunction": "yedselfsvcex",
+            "privacy": {
+                "private": true,
+                "auth": [
+                    "/POST",
+                    "/GET",
+                    "/PUT",
+                    "/PATCH",
+                    "/DELETE"
+                ]
+            },
+            "policyResourceName": "/authtest"
+        }
+    ],
+    "resourceName": "yedselfsvcex",
+    "apiName": "yedselfsvcex",
+    "functionArns": [
+        {
+            "lambdaFunction": "yedselfsvcex"
+        }
+    ],
+    "privacy": {
+        "auth": 1,
+        "unauth": 0,
+        "authRoleName": "amplify-yedselfservicecs-dev-155618-authRole",
+        "unAuthRoleName": "amplify-yedselfservicecs-dev-155618-unauthRole"
     },
-    {
-      "name": "/address",
-      "lambdaFunction": "yedselfsvcex",
-      "privacy": {
-        "open": true
-      },
-      "policyResourceName": "/address"
-    },
-    {
-      "name": "/orders",
-      "lambdaFunction": "yedselfsvcex",
-      "privacy": {
-        "open": true
-      },
-      "policyResourceName": "/orders"
-    },
-    {
-      "name": "/order/{isbn}",
-      "lambdaFunction": "yedselfsvcex",
-      "privacy": {
-        "open": true
-      },
-      "policyResourceName": "/order/*"
-    }
-  ],
-  "resourceName": "yedselfsvcex",
-  "apiName": "yedselfsvcex",
-  "functionArns": [
-    {
-      "lambdaFunction": "yedselfsvcex"
-    }
-  ],
-  "privacy": {
-    "auth": 0,
-    "unauth": 0,
-    "authRoleName": "amplify-yedselfservicecs-dev-155618-authRole",
-    "unAuthRoleName": "amplify-yedselfservicecs-dev-155618-unauthRole"
-  },
-  "dependsOn": [
-    {
-      "category": "function",
-      "resourceName": "yedselfsvcex",
-      "attributes": [
-        "Name",
-        "Arn"
-      ]
-    }
-  ]
+    "dependsOn": [
+        {
+            "category": "function",
+            "resourceName": "yedselfsvcex",
+            "attributes": [
+                "Name",
+                "Arn"
+            ]
+        }
+    ],
+    "uuid": "e8f54dbe",
+    "authResourceName": "yedselfservicecs0e2e388e"
 }

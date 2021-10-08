@@ -1,9 +1,14 @@
 import logo from './logo.svg';
 import './App.css';
+import { Auth } from 'aws-amplify';
+import { withAuthenticator } from '@aws-amplify/ui-react';
+import Authtest from './components/authtest/Authtest'
 
 function App() {
+  //Auth.currentAuthenticatedUser().then((response) => console.log(response));
   return (
     <div className="App">
+      <Authtest></Authtest>
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
@@ -22,4 +27,4 @@ function App() {
   );
 }
 
-export default App;
+export default withAuthenticator(App);
