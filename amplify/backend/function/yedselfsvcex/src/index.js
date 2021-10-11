@@ -1,17 +1,3 @@
-/*
-Use the following code to retrieve configured secrets from SSM:
-
-const aws = require('aws-sdk');
-
-const { Parameters } = await (new aws.SSM())
-  .getParameters({
-    Names: ["YED_API_TOKEN","YED_COOKIE"].map(secretName => process.env[secretName]),
-    WithDecryption: true,
-  })
-  .promise();
-
-Parameters will be of the form { Name: 'secretName', Value: 'secretValue', ... }[]
-*/
 const aws = require("aws-sdk");
 const axios = require("axios");
 
@@ -21,11 +7,8 @@ let YED_COOKIE;
 let API_HEADER;
 
 /**
- * TODO
  * Function that calls to the YED Inventory API and returns the keys available in the inventory
- * Configuration can be done in the model above to create custom descriptions for the keys to be used in your UI
- * @param - N/A
- * @returns - List of objects containing specific information about the keys
+ * @returns The full inventory belonging to your specific organization
  */
 async function getInventoryKeys() {
   const res = await axios
@@ -44,9 +27,9 @@ async function getInventoryKeys() {
 }
 
 /**
- * Get an order of a specific ID from the YED API
- * @param - an ID that corresponds to a order number in the YED console
- * @returns the order object returned by YED
+ * Gets the order details of a specific order by ID
+ * @param {String} orderID - An ID that corresponds to a current order number in YED
+ * @returns The order details belonging to the passed order ID
  */
 async function getOrder(orderID) {
   const res = await axios
@@ -63,9 +46,9 @@ async function getOrder(orderID) {
 }
 
 /**
- *Creates a new order based on the parameters sent by a user
- * @param - an object sent by the client containing the new shipment to create
- * @returns - object with summary of the order
+ * Creates a new order based on the parameters sent by a user
+ * @param {Object} orderDetails - Object sent by the client containing details about the shipment to create
+ * @returns An object with a summary of the order
  */
 async function createOrder(orderDetails) {
   //TODO, may need to take in User Details in this method, or consider making a global variable on lambda call
@@ -86,10 +69,47 @@ async function createOrder(orderDetails) {
 }
 
 /**
+ * Method to edit an existing order
+ * @param {Object} orderDetails - Object containing the new order details to edit
+ * @param {String} orderID - ID of the order to be edited
+ * @returns An object containing the new shipment details
+ */
+async function editOrder(orderDetails, orderID) {
+  const res = await axios .put(`${YED_API_URL}/shipments_exact/${orderID}`, orderDetails, {
+    headers: API_HEADER
+  })
+  .then((response) => {
+    return response.data;
+  })
+  .catch(({ response }) => {
+    return response.data;
+  });
+  return res;
+}
+
+/**
+ * Call to the YED API to delete an order
+ * @param {String} orderID - ID of order to delete
+ * @returns Message stating whether the deletion was completed or an error
+ */
+async function deleteOrder(orderID) {
+  const res = await axios.delete(`${YED_API_URL}/shipments_exact/${orderID}`, {
+    headers: API_HEADER
+  })
+  .then((response) => {
+    return response.data;
+  })
+  .catch(({ response }) => {
+    return response.data;
+  });
+  return res; 
+}
+
+/**
  * Function that calls to the YED API in order to verify if an address is a shippable address by YED
  * This method can be replaced with another address verification API if needed, but some rewrites below may be needed
- * @param, - Address entered by the user - The body to the lambda API should match the schema in the YED API Documentation
- * @returns - True if the address is valid, false otherwise (this may be extended to include recommendations in a later release)
+ * @param {Object} userAddress - Object containing address components sent by a user (follows the object format in the YED API Docs)
+ * @returns Object detailing if the address is correct or incorrect (expect a response code of 200 if valid, 400 otherwise)
  */
 async function verifyAddress(userAddress) {
   const res = await axios
@@ -105,9 +125,6 @@ async function verifyAddress(userAddress) {
   return res;
 }
 
-/**
- * This is your main logic of the lambda function
- */
 exports.handler = async (event) => {
   // TODO implement
 
@@ -153,12 +170,17 @@ exports.handler = async (event) => {
         body = await createOrder(orderDetails);
         break;
       case "PUT /order/{isbn}":
-        body = operation;
+        const editOrderDetails = event.body;
+        const editOrderID = event.pathParameters.isbn;
+        body = await editOrder(editOrderDetails, editOrderID);
         break;
       case "DELETE /order/{isbn}":
-        body = operation;
+        const deleteOrderID = event.pathParameters.isbn;
+        body = await deleteOrder(deleteOrderID);
         break;
       case "GET /orders":
+        //Will implement once we figure out our data storage decision 
+        //The primary reason for this method is to retrieve all orders belonging to a user
         body = operation;
         break;
       default:

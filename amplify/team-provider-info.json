@@ -21,7 +21,7 @@
       "function": {
         "yedselfsvcex": {
           "deploymentBucketName": "amplify-yedselfservicecs-dev-155618-deployment",
-          "s3Key": "amplify-builds/yedselfsvcex-6e745554705333706134-build.zip",
+          "s3Key": "amplify-builds/yedselfsvcex-716f783767744b30494a-build.zip",
           "secretsPathAmplifyAppId": "d1zii60ffakcy3",
           "yedApiUrl": "https://api.console.stage.yubico.com/v1"
         }
