@@ -19,12 +19,16 @@ class Inventory extends React.Component {
                     newList.push(item)
                 }
             })
-            console.log(newList);
             this.setState({
                 invList: newList
             });
             this.forceUpdate();
         })
+    }
+
+    sendSelection(event, item) {
+        this.props.parentCallback(item);
+        event.preventDefault();
     }
     
     render() {
@@ -41,6 +45,7 @@ class Inventory extends React.Component {
                             <td><img src={item.inventoryConfig.imageLocation}></img></td>
                             <td>{item.product_name}</td>
                             <td>{item.inventoryConfig.customDescription}</td>
+                            <td><button onClick={(e) => this.sendSelection(e, item) }>Pick Me</button></td>
                         </tr>
                     ))}
                 </tbody>
