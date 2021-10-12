@@ -20,7 +20,8 @@ const inventoryConfig = {
         "customDescription": "Custom desc for 5C"
     },
     "InventoryType": [ 1 ],
-    "QuantityDefault": 2
+    "QuantityDefault": 2,
+    "DeliveryTypeDefault": 1
 }
 
 export default inventoryConfig;

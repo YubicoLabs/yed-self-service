@@ -22,7 +22,7 @@ class Inventory extends React.Component {
                 <table>
                 <tbody>
                         <tr>
-                            <td><img src={this.props.keySelection.inventoryConfig.imageLocation}></img></td>
+                            <td><img src={this.state.keySelection.inventoryConfig.imageLocation}></img></td>
                             <td>{this.state.keySelection.product_name}</td>
                             <td>{this.state.keySelection.inventoryConfig.customDescription}</td>
                         </tr>
