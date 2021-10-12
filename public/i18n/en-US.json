@@ -1,0 +1,28 @@
+{
+    "order": {
+      "delivery": "Delivery",
+      "payment": "Payment",
+      "order-history": "Order History",
+      "shippingAddress": "Shipping Address",
+      "continue": "Continue",
+      "previous": "Previous",
+      "clear": "Clear"
+    },
+    "address": {
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "addressLine1": "Address Line 1",
+      "addressLine2": "Address Line 2",
+      "city": "City",
+      "provinceState": "Province/State",
+      "country": "Country",
+      "zipPostalCode": "Zip/Postal Code"
+    },
+    "errorMessages": {
+      "required": "{{- fieldName}} is required",
+      "tooLong": "Too long, max length is {{max}}",
+      "tooShort": "Too short, min length is {{min}}",
+      "invalidFormat": "Invalid Format"
+    }
+  }
+  
