@@ -1,1 +1,5 @@
-{}
+{
+    "AuthCognitoUserPoolId": {
+        "Fn::GetAtt": ["authyedselfservicecs0e2e388e", "Outputs.UserPoolId"]
+      }    
+}

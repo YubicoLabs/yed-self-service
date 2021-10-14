@@ -30,5 +30,38 @@
         "yedselfservicecs0e2e388e": {}
       }
     }
+  },
+  "lukedev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-yedselfservicecs-lukedev-150250-authRole",
+      "UnauthRoleArn": "arn:aws:iam::764504484168:role/amplify-yedselfservicecs-lukedev-150250-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::764504484168:role/amplify-yedselfservicecs-lukedev-150250-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-yedselfservicecs-lukedev-150250-deployment",
+      "UnauthRoleName": "amplify-yedselfservicecs-lukedev-150250-unauthRole",
+      "StackName": "amplify-yedselfservicecs-lukedev-150250",
+      "StackId": "arn:aws:cloudformation:us-east-1:764504484168:stack/amplify-yedselfservicecs-lukedev-150250/50782360-2c71-11ec-9db3-0eb55df318d5",
+      "AmplifyAppId": "d2e4ig87118z6g"
+    },
+    "categories": {
+      "auth": {
+        "yedselfservicecs0e2e388e": {},
+        "userPoolGroups": {}
+      },
+      "function": {
+        "yedselfsvcex": {
+          "secretsPathAmplifyAppId": "d2e4ig87118z6g",
+          "yedApiUrl": "https://api.console.stage.yubico.com/v1",
+          "deploymentBucketName": "amplify-yedselfservicecs-lukedev-150250-deployment",
+          "s3Key": "amplify-builds/yedselfsvcex-72456e66687254566666-build.zip"
+        }
+      },
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "d2e4ig87118z6g",
+          "type": "manual"
+        }
+      }
+    }
   }
 }

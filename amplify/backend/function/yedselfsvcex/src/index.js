@@ -1,3 +1,17 @@
+/*
+Use the following code to retrieve configured secrets from SSM:
+
+const aws = require('aws-sdk');
+
+const { Parameters } = await (new aws.SSM())
+  .getParameters({
+    Names: ["YED_API_TOKEN","YED_COOKIE"].map(secretName => process.env[secretName]),
+    WithDecryption: true,
+  })
+  .promise();
+
+Parameters will be of the form { Name: 'secretName', Value: 'secretValue', ... }[]
+*/
 const aws = require("aws-sdk");
 const axios = require("axios");
 
@@ -183,6 +197,12 @@ exports.handler = async (event) => {
         //The primary reason for this method is to retrieve all orders belonging to a user
         body = operation;
         break;
+        case "GET /orderTest":
+          //Will implement once we figure out our data storage decision 
+          //The primary reason for this method is to retrieve all orders belonging to a user
+          console.log(event);
+          body = operation;
+          break;
       default:
         body = operation;
         break;

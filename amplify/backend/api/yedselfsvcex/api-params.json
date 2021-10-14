@@ -46,6 +46,21 @@
                 "open": true
             },
             "policyResourceName": "/order/*"
+        },
+        {
+            "name": "/orderTest",
+            "lambdaFunction": "yedselfsvcex",
+            "privacy": {
+                "private": true,
+                "auth": [
+                    "/POST",
+                    "/GET",
+                    "/PUT",
+                    "/PATCH",
+                    "/DELETE"
+                ]
+            },
+            "policyResourceName": "/orderTest"
         }
     ],
     "resourceName": "yedselfsvcex",
@@ -56,10 +71,10 @@
         }
     ],
     "privacy": {
-        "auth": 1,
+        "auth": 2,
         "unauth": 0,
-        "authRoleName": "amplify-yedselfservicecs-dev-155618-authRole",
-        "unAuthRoleName": "amplify-yedselfservicecs-dev-155618-unauthRole"
+        "authRoleName": "amplify-yedselfservicecs-lukedev-150250-authRole",
+        "unAuthRoleName": "amplify-yedselfservicecs-lukedev-150250-unauthRole"
     },
     "dependsOn": [
         {
@@ -71,6 +86,6 @@
             ]
         }
     ],
-    "uuid": "d200b5dc",
+    "uuid": "8374514f",
     "authResourceName": "yedselfservicecs0e2e388e"
 }

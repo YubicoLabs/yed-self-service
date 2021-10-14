@@ -21,6 +21,9 @@ import {
   mapStateToProps,
 } from "./delivery.props";
 
+import { API, Auth } from 'aws-amplify';
+const axios = require("axios");
+
 const DeliveryFormControl = styled(FormControl)(({ theme }) => ({
   display: "block",
   marginTop: theme.spacing(2),
@@ -37,6 +40,25 @@ const Delivery: FunctionComponent<DeliveryFormProps> = ({
     submitDeliveryForm(values);
     history.push(AppRoutePath.Order + OrderRoutePath.OrderHistory);
   };
+
+  const orderTest = async () => { 
+    const token = (await Auth.currentSession()).getIdToken().getJwtToken();
+    const apiName = 'yedselfsvcex';
+    const path = '/orderTest';
+    const myInit = { 
+      body: {
+        test: 'test'
+      },
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+      response: true,
+      queryStringParameters: {}
+    };
+  
+    const response = await API.get(apiName, path, myInit);
+    console.log("response=",response);
+  }
 
   return (
     <>
@@ -84,6 +106,7 @@ const Delivery: FunctionComponent<DeliveryFormProps> = ({
           </Form>
         )}
       </Formik>
+      <div><button onClick={orderTest}> Test Cognito User Pool Auth </button></div>
     </>
   );
 };
