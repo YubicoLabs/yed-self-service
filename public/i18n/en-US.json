@@ -2,6 +2,8 @@
     "order": {
       "delivery": "Delivery",
       "payment": "Payment",
+      "validate-address": "Validate Address",
+      "confirmation": "Confirmation",
       "order-history": "Order History",
       "shippingAddress": "Shipping Address",
       "continue": "Continue",
@@ -17,6 +19,19 @@
       "provinceState": "Province/State",
       "country": "Country",
       "zipPostalCode": "Zip/Postal Code"
+    },
+    "address-validate": {
+      "loading": "We are verifying your address",
+      "success": "Address Validated - Press Continue to review your order",
+      "error": "Your address is not valid - Return to the previous screen to correct"
+    },
+    "checkout": {
+      "delivery": "Delivery",
+      "confirmation": "Confirmation",
+      "shippingAddress": "Shipping Address",
+      "continue": "Continue",
+      "previous": "Previous",
+      "clear": "Clear"
     },
     "errorMessages": {
       "required": "{{- fieldName}} is required",

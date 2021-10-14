@@ -35,7 +35,7 @@ const Delivery: FunctionComponent<DeliveryFormProps> = ({
   const history = useHistory();
   const submitForm = (values: DeliveryFormValues) => {
     submitDeliveryForm(values);
-    history.push(AppRoutePath.Order + OrderRoutePath.OrderHistory);
+    history.push(AppRoutePath.Order + OrderRoutePath.AddressValidate);
   };
 
   return (

@@ -1,4 +1,4 @@
-import { withAuthenticator, AmplifySignOut } from "@aws-amplify/ui-react";
+import { withAuthenticator } from "@aws-amplify/ui-react";
 import { Container, CircularProgress } from "@material-ui/core";
 import Amplify, { Auth } from "aws-amplify";
 import React, { Suspense } from "react";
@@ -24,7 +24,6 @@ Auth.currentAuthenticatedUser({
 function App() {
   return (
     <Container maxWidth="lg">
-      <AmplifySignOut />
       <Suspense fallback={<CircularProgress />}>
         <Provider store={rootStore}>
           <AppRoutes />
