@@ -21,6 +21,9 @@
     },
     "yedApiUrl": {
       "Type": "String"
+    },
+    "defaultProductId": {
+      "Type": "String"
     }
   },
   "Conditions": {
@@ -122,6 +125,9 @@
             },
             "YED_API_URL": {
               "Ref": "yedApiUrl"
+            },
+            "DEFAULT_PRODUCT_ID": {
+              "Ref": "defaultProductId"
             }
           }
         },

@@ -46,6 +46,14 @@
                 "open": true
             },
             "policyResourceName": "/order/*"
+        },
+        {
+            "name": "/defaultinventory",
+            "lambdaFunction": "yedselfsvcex",
+            "privacy": {
+                "open": true
+            },
+            "policyResourceName": "/defaultinventory"
         }
     ],
     "resourceName": "yedselfsvcex",
@@ -71,6 +79,6 @@
             ]
         }
     ],
-    "uuid": "d200b5dc",
+    "uuid": "830e17ef",
     "authResourceName": "yedselfservicecs0e2e388e"
 }

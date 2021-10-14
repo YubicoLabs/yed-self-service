@@ -1,22 +1,20 @@
-import React, { FunctionComponent, useState } from "react";
-import { Typography, CircularProgress, Button, Box } from "@material-ui/core";
-import { useTranslation } from "react-i18next";
-import { connect } from "react-redux";
-import { Formik } from "formik";
-
-import { AddressFormValues } from "../address/address-form-values.interface";
-import { OrderStepper } from "../order-stepper/order-stepper";
-
+import React, { FunctionComponent, useState } from 'react';
+import { Typography, CircularProgress, Button, Box } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
+import { connect } from 'react-redux';
+import { Formik } from 'formik';
+import { AddressFormValues } from '../address/address-form-values.interface';
+import { OrderStepper } from '../order-stepper/order-stepper';
 import {
   AddressValidateProps,
   mapStateToProps,
-} from "./address-validate.props";
-import { Message } from "./address-validate-values-interface";
-import { AppRoutePath } from "../../../../routes/app-route-path";
-import { OrderRoutePath } from "../../routes/order-route-path";
-import { useHistory } from "react-router";
-import ArrowRightAltIcon from "@material-ui/icons/ArrowRightAlt";
-import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+} from './address-validate.props';
+import { Message } from './address-validate-values-interface';
+import { AppRoutePath } from '../../../../routes/app-route-path';
+import { OrderRoutePath } from '../../routes/order-route-path';
+import { useHistory } from 'react-router';
+import ArrowRightAltIcon from '@material-ui/icons/ArrowRightAlt';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 let VerifyAddress = async (address: AddressFormValues): Promise<any> => {
   const body = {
@@ -28,25 +26,25 @@ let VerifyAddress = async (address: AddressFormValues): Promise<any> => {
     country_code_2: address.country,
   };
   const requestOptions = {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   };
   const URL = `${process.env.REACT_APP_API_URL}/address`;
   return await fetch(URL, requestOptions)
     .then((response) => response.json())
     .then((data) => {
-      if (data.status === "undeliverable") {
+      if (data.status === 'undeliverable') {
         return {
           called: true,
           isValid: false,
           message: data.details,
         };
-      } else if (data.status === "deliverable") {
+      } else if (data.status === 'deliverable') {
         return {
           called: true,
           isValid: true,
-          message: "",
+          message: '',
         };
       }
     });
@@ -57,7 +55,7 @@ export const AddressValidate: FunctionComponent<AddressValidateProps> = ({
 }) => {
   const [called, setCalled] = useState(false);
   const [isValid, setIsValid] = useState(false);
-  const [message, setMessage] = useState([{ description: "" }]);
+  const [message, setMessage] = useState([{ description: '' }]);
 
   const { t } = useTranslation();
   const history = useHistory();
@@ -86,65 +84,61 @@ export const AddressValidate: FunctionComponent<AddressValidateProps> = ({
       <Formik
         enableReinitialize={true}
         initialValues={deliveryForm}
-        onSubmit={submitForm}
-      >
-        <Box textAlign="right" mt={2}>
+        onSubmit={submitForm}>
+        <Box textAlign='right' mt={2}>
           {!called && (
             <>
               <CircularProgress />
-              <Typography variant="h6" gutterBottom>
-                {t("address-validate.loading")}
+              <Typography variant='h6' gutterBottom>
+                {t('address-validate.loading')}
               </Typography>
             </>
           )}
           {isValid && (
             <>
-            <Typography variant="h6" gutterBottom>
-                {t("address-validate.success")}
+              <Typography variant='h6' gutterBottom>
+                {t('address-validate.success')}
               </Typography>
               <Button
-                type="button"
-                variant="contained"
-                color="secondary"
+                type='button'
+                variant='contained'
+                color='secondary'
                 endIcon={<ArrowBackIcon />}
-                size="large"
-                onClick={goBack}
-              >
-                {t("order.previous")}
+                size='large'
+                onClick={goBack}>
+                {t('order.previous')}
               </Button>
               <Button
-                type="button"
-                variant="contained"
-                color="primary"
+                type='button'
+                variant='contained'
+                color='primary'
                 endIcon={<ArrowRightAltIcon />}
-                size="large"
-                onClick={submitForm}
-              >
-                {t("order.continue")}
+                size='large'
+                onClick={submitForm}>
+                {t('order.continue')}
               </Button>
             </>
           )}
           {called && !isValid && (
             <>
-              <Typography variant="h6" gutterBottom>
-                {t("address-validate.error")}
+              <Typography variant='h6' gutterBottom>
+                {t('address-validate.error')}
               </Typography>
               {message.map(function (item: Message, index) {
                 return (
-                  <Typography variant="h6" gutterBottom>
+                  <Typography variant='h6' gutterBottom key={index}>
                     {item.description}
                   </Typography>
                 );
               })}
               <Button
-                type="button"
-                variant="contained"
-                color="secondary"
+                type='button'
+                variant='contained'
+                color='secondary'
                 endIcon={<ArrowBackIcon />}
-                size="large"
-                onClick={goBack}
-              >
-                {t("order.previous")}
+                size='large'
+                onClick={goBack}>
+                {t('order.previous')}
               </Button>
             </>
           )}

@@ -2,6 +2,7 @@ const aws = require("aws-sdk");
 const axios = require("axios");
 
 const YED_API_URL = process.env.YED_API_URL;
+const DEFAULT_PRODUCT_ID = process.env.DEFAULT_PRODUCT_ID;
 let YED_API_TOKEN;
 let YED_COOKIE;
 let API_HEADER;
@@ -24,6 +25,26 @@ async function getInventoryKeys() {
       }
     );
   return res;
+}
+
+/**
+ * Allows the application owner to set configurations to set a default key to be redeemed by all users
+ * @returns The product Obj of the specified default product key
+ */
+async function getDefaultKey() {
+  const res = await axios
+    .get(`${YED_API_URL}/products/${DEFAULT_PRODUCT_ID}`, {
+      headers: API_HEADER
+    })
+    .then(
+      (response) => {
+        return response.data
+      },
+      (error) => {
+        return error;
+      }
+    )
+    return res
 }
 
 /**
@@ -156,6 +177,9 @@ exports.handler = async (event) => {
     switch (operation) {
       case "GET /inventory":
         body = await getInventoryKeys();
+        break;
+      case "GET /defaultinventory":
+        body = await getDefaultKey();
         break;
       case "POST /address":
         const userAddress = event.body;
