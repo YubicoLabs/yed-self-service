@@ -16,12 +16,10 @@ export const OrderStepper: FunctionComponent = () => {
   useEffect(() => {
     if (path.includes(OrderRoutePath.Delivery)) {
       setActiveStep(0);
-    } else if (path.includes(OrderRoutePath.AddressValidate)) {
-      setActiveStep(1);
     } else if (path.includes(OrderRoutePath.Confirmation)) {
-      setActiveStep(2);
+      setActiveStep(1);
     } else {
-      setActiveStep(3);
+      setActiveStep(2);
     }
   }, [path]);
 
@@ -29,9 +27,6 @@ export const OrderStepper: FunctionComponent = () => {
     <Stepper alternativeLabel activeStep={activeStep}>
       <Step key={OrderRoutePath.Delivery}>
         <StepLabel>{t("order.delivery")}</StepLabel>
-      </Step>
-      <Step key={OrderRoutePath.AddressValidate}>
-        <StepLabel>{t("order.validate-address")}</StepLabel>
       </Step>
       <Step key={OrderRoutePath.Confirmation}>
         <StepLabel>{t("order.confirmation")}</StepLabel>

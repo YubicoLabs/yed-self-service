@@ -11,7 +11,7 @@ import {
   mapDispatchToProps,
   mapStateToProps,
 } from './key-default.props';
-import { CircularProgress, Typography } from '@material-ui/core';
+import { CircularProgress, Typography, Box } from '@material-ui/core';
 
 let getDefaultKey = async (): Promise<KeyDefaultValues> => {
   console.log('Getting default key');
@@ -40,7 +40,6 @@ let getDefaultKey = async (): Promise<KeyDefaultValues> => {
 const KeyDefault: FunctionComponent<KeyDefaultProps> = ({
   submitKeyDefault,
 }) => {
-  console.log('Loading KeyDefault');
   const [called] = useState(false);
 
   const { t } = useTranslation();
@@ -57,10 +56,22 @@ const KeyDefault: FunctionComponent<KeyDefaultProps> = ({
 
   return (
     <>
-      <CircularProgress />
-      <Typography variant='h6' gutterBottom>
-        {t('key-default.getting-key')}
-      </Typography>
+      <Box
+        mt={4}
+        sx={{
+          display: 'grid',
+          gridTemplateRows: 'repeat(1, 1fr)',
+          justifyContent: 'center',
+          alignItems: 'center',
+          textAlign: 'center'
+        }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+          <CircularProgress />
+        </Box>
+        <Typography variant='h6' gutterBottom>
+          {t('key-default.getting-key')}
+        </Typography>
+      </Box>
     </>
   );
 };

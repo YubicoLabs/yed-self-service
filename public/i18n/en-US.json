@@ -8,7 +8,9 @@
       "shippingAddress": "Shipping Address",
       "continue": "Continue",
       "previous": "Previous",
-      "clear": "Clear"
+      "clear": "Clear",
+      "item": "Your key:",
+      "loading": "Verifying Address"
     },
     "key-default": {
       "getting-key": "Hold tight, we're grabbing your key"
@@ -34,7 +36,11 @@
       "shippingAddress": "Shipping Address",
       "continue": "Continue",
       "previous": "Previous",
-      "clear": "Clear"
+      "clear": "Clear",
+      "customer-name": "Name",
+      "place-order": "Place Order",
+      "correct-address": "Edit Address",
+      "order-submit": "Hold tight while we place your order!"
     },
     "errorMessages": {
       "required": "{{- fieldName}} is required",

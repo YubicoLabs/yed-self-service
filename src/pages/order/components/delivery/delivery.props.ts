@@ -9,6 +9,7 @@ import { DeliveryFormValues } from "./delivery-form-values.interface";
 const mapStateToProps = (state: RootState) => {
   return {
     deliveryForm: orderSelectors.getDeliveryForm(state),
+    keyDefault: orderSelectors.getKeyDefault(state),
   };
 };
 

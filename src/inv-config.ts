@@ -1,12 +1,11 @@
 /* eslint-disable */
 
-const invConfig = {
+const invConfig: any = {
     "hasDefault": true,
     "YubiKey 5Ci": {
         "imageLocation": "../images/5CI2.png",
-        "customDescription": "Custom desc for 5CI"
+        "customDescription": "Protect ANY of your mobile devices"
     },
 };
-
 
 export default invConfig;
