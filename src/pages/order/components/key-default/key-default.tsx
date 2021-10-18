@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router';
 import { AppRoutePath } from '../../../../routes/app-route-path';
@@ -40,19 +40,17 @@ let getDefaultKey = async (): Promise<KeyDefaultValues> => {
 const KeyDefault: FunctionComponent<KeyDefaultProps> = ({
   submitKeyDefault,
 }) => {
-  const [called] = useState(false);
-
   const { t } = useTranslation();
   const history = useHistory();
+
   const submitKey = (values: KeyDefaultValues) => {
     submitKeyDefault(values);
     history.push(AppRoutePath.Order + OrderRoutePath.Delivery);
   };
-  if (!called) {
-    getDefaultKey().then((res) => {
-      submitKey(res);
-    });
-  }
+
+  getDefaultKey().then((res) => {
+    submitKey(res);
+  });
 
   return (
     <>
@@ -63,7 +61,7 @@ const KeyDefault: FunctionComponent<KeyDefaultProps> = ({
           gridTemplateRows: 'repeat(1, 1fr)',
           justifyContent: 'center',
           alignItems: 'center',
-          textAlign: 'center'
+          textAlign: 'center',
         }}>
         <Box sx={{ display: 'flex', justifyContent: 'center' }}>
           <CircularProgress />

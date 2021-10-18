@@ -42,6 +42,13 @@
       "correct-address": "Edit Address",
       "order-submit": "Hold tight while we place your order!"
     },
+    "order-history": {
+      "title": "Your order history",
+      "order-placed": "Order Placed",
+      "ship-to": "Ship To",
+      "order-number": "Order #",
+      "track-package": "Track Package"
+    },
     "errorMessages": {
       "required": "{{- fieldName}} is required",
       "tooLong": "Too long, max length is {{max}}",

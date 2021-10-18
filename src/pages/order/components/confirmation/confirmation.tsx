@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState, useEffect } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 import { Typography, Button, CircularProgress } from '@material-ui/core';
 import Stack from '@mui/material/Stack';
 import { useTranslation } from 'react-i18next';
@@ -131,7 +131,7 @@ export const Confirmation: FunctionComponent<ConfirmationProps> = ({
       queryStringParameters: {},
     };
 
-    const response = await API.post(apiName, path, myInit);
+    await API.post(apiName, path, myInit);
     history.push(AppRoutePath.Order + OrderRoutePath.OrderHistory);
   };
   const editAddress = () => {
