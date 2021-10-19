@@ -51,7 +51,10 @@
             "name": "/defaultinventory",
             "lambdaFunction": "yedselfsvcex",
             "privacy": {
-                "open": true
+                "private": true,
+                "auth": [
+                    "/GET"
+                ]
             },
             "policyResourceName": "/defaultinventory"
         }
@@ -64,10 +67,10 @@
         }
     ],
     "privacy": {
-        "auth": 1,
+        "auth": 2,
         "unauth": 0,
-        "authRoleName": "amplify-yedselfservicecs-dev-155618-authRole",
-        "unAuthRoleName": "amplify-yedselfservicecs-dev-155618-unauthRole"
+        "authRoleName": "amplify-yedselfservicecs-lukedev-150250-authRole",
+        "unAuthRoleName": "amplify-yedselfservicecs-lukedev-150250-unauthRole"
     },
     "dependsOn": [
         {
@@ -79,6 +82,6 @@
             ]
         }
     ],
-    "uuid": "830e17ef",
+    "uuid": "8374514f",
     "authResourceName": "yedselfservicecs0e2e388e"
 }

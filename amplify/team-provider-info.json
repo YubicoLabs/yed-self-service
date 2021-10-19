@@ -28,7 +28,8 @@
         }
       },
       "auth": {
-        "yedselfservicecs0e2e388e": {}
+        "yedselfservicecs0e2e388e": {},
+        "userPoolGroups": {}
       }
     }
   }

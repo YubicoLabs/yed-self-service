@@ -13,8 +13,10 @@ import {
 } from './key-default.props';
 import { CircularProgress, Typography, Box } from '@material-ui/core';
 
+import { API, Auth } from 'aws-amplify';
+
 let getDefaultKey = async (): Promise<KeyDefaultValues> => {
-  console.log('Getting default key');
+  /*
   const URL = `${process.env.REACT_APP_API_URL}/defaultinventory`;
   const ret = await fetch(URL)
     .then(
@@ -34,7 +36,26 @@ let getDefaultKey = async (): Promise<KeyDefaultValues> => {
         inventory_type: data.inventory_type,
       };
     });
-  return ret;
+    */
+
+  const token = (await Auth.currentSession()).getIdToken().getJwtToken();
+  const apiName = 'yedselfsvcex';
+  const path = '/defaultinventory';
+  const myInit = {
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    response: true,
+    queryStringParameters: {}
+  }
+  const response =  await API.get(apiName, path, myInit);
+  return {
+    product_id: response.data.product_id,
+        product_name: response.data.product_name,
+        product_code: response.data.product_code,
+        product_tier: response.data.product_tier,
+        inventory_type: response.data.inventory_type,
+  };
 };
 
 const KeyDefault: FunctionComponent<KeyDefaultProps> = ({

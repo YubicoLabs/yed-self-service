@@ -17,6 +17,12 @@
           "functionyedselfsvcexArn": {
             "Type": "String",
             "Default": "functionyedselfsvcexArn"
+          },
+
+          "AuthCognitoUserPoolId": {
+            "Type": "String",
+            "Description": "The id of an existing User Pool to connect. If this is changed, a user pool will not be created for you.",
+            "Default": "NONE"
           }
 
           
@@ -1156,7 +1162,13 @@
                       "schema": {
                         "$ref": "#/definitions/RequestSchema"
                       }
-                    }
+                    },
+                    {
+                      "name": "Authorization",
+                      "in": "header",
+                      "required": false,
+                      "type": "string"
+                    }  
                   ],
                   "responses": {
                     "200": {
@@ -1166,6 +1178,12 @@
                       }
                     }
                   },
+                  
+                    "security": [
+                        {
+                          "Cognito": []
+                        }
+                      ],
                   
                   "x-amazon-apigateway-integration": {
                     "responses": {
@@ -1255,7 +1273,13 @@
                       "schema": {
                         "$ref": "#/definitions/RequestSchema"
                       }
-                    }
+                    },
+                    {
+                      "name": "Authorization",
+                      "in": "header",
+                      "required": false,
+                      "type": "string"
+                    }  
                   ],
                   "responses": {
                     "200": {
@@ -1265,6 +1289,12 @@
                       }
                     }
                   },
+                  
+                    "security": [
+                        {
+                          "Cognito": []
+                        }
+                      ],
                   
                   "x-amazon-apigateway-integration": {
                     "responses": {
@@ -1300,11 +1330,35 @@
               
             },
             "securityDefinitions": {
-              "sigv4": {
+              "Cognito": {
                 "type": "apiKey",
                 "name": "Authorization",
                 "in": "header",
-                "x-amazon-apigateway-authtype": "awsSigv4"
+                "x-amazon-apigateway-authtype": "cognito_user_pools",
+                "x-amazon-apigateway-authorizer": {
+                  "type": "cognito_user_pools",
+                  "providerARNs": [
+                    {
+                      "Fn::Join": [
+                        "",
+                        [
+                          "arn:aws:cognito-idp:",
+                          {
+                            "Ref": "AWS::Region"
+                          },
+                          ":",
+                          {
+                            "Ref": "AWS::AccountId"
+                          },
+                          ":userpool/",
+                          {
+                            "Ref": "AuthCognitoUserPoolId"
+                          }
+                        ]
+                      ]
+                    }
+                  ]
+                }
               }
             },
             "definitions": {
@@ -1376,7 +1430,7 @@
         
         
 
-      "DeploymentAPIGWyedselfsvcex830e17ef": {
+      "DeploymentAPIGWyedselfsvcex74d31723": {
         "Type": "AWS::ApiGateway::Deployment",
         "Properties": {
           "Description": "The Development stage deployment of your API.",
