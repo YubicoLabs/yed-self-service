@@ -1,12 +1,3 @@
-import { Button, FormControl, Typography } from '@material-ui/core';
-import Card from '@mui/material/Card';
-import Alert from '@mui/material/Alert';
-import Stack from '@mui/material/Stack';
-import CircularProgress from '@mui/material/CircularProgress';
-import { styled } from '@material-ui/core/styles';
-import ArrowRightAltIcon from '@material-ui/icons/ArrowRightAlt';
-import ClearIcon from '@material-ui/icons/Clear';
-import { Form, Formik } from 'formik';
 import React, { FunctionComponent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
@@ -26,9 +17,22 @@ import {
   mapDispatchToProps,
   mapStateToProps,
 } from './delivery.props';
+
 import { CardContent, CardMedia } from '@mui/material';
-import invConfig from '../../../../inv-config';
 import { Box } from '@mui/system';
+import { Button, FormControl, Typography } from '@material-ui/core';
+import Card from '@mui/material/Card';
+import Alert from '@mui/material/Alert';
+import Stack from '@mui/material/Stack';
+import CircularProgress from '@mui/material/CircularProgress';
+import { styled } from '@material-ui/core/styles';
+import ArrowRightAltIcon from '@material-ui/icons/ArrowRightAlt';
+import ClearIcon from '@material-ui/icons/Clear';
+import { Form, Formik } from 'formik';
+
+import { API, Auth } from 'aws-amplify';
+
+import invConfig from '../../../../inv-config';
 
 const DeliveryFormControl = styled(FormControl)(({ theme }) => ({
   display: 'block',
@@ -69,7 +73,7 @@ const KeyDisplay: FunctionComponent<{ keyDefault: KeyDefaultValues }> = ({
 };
 
 let VerifyAddress = async (address: AddressFormValues): Promise<any> => {
-  const body = {
+  const postBody = {
     street_line1: address.addressLine1,
     street_line2: address.addressLine2,
     city: address.city,
@@ -77,28 +81,32 @@ let VerifyAddress = async (address: AddressFormValues): Promise<any> => {
     region: address.provinceState,
     country_code_2: address.country,
   };
-  const requestOptions = {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
+
+  const token = (await Auth.currentSession()).getIdToken().getJwtToken();
+  const apiName = 'yedselfsvcex';
+  const path = '/address';
+  const myInit = {
+    body: postBody,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    response: true,
+    queryStringParameters: {},
   };
-  const URL = `${process.env.REACT_APP_API_URL}/address`;
-  return await fetch(URL, requestOptions)
-    .then((response) => response.json())
-    .then((data) => {
-      if (data.status === 'undeliverable') {
-        return {
-          deliverable: false,
-          called: true,
-          isValid: false,
-          message: data.details,
-        };
-      } else if (data.status === 'deliverable') {
-        return {
-          deliverable: true,
-        };
-      }
-    });
+  const response = await API.post(apiName, path, myInit);
+  console.log(response);
+  if (response.data.status === 'undeliverable') {
+    return {
+      deliverable: false,
+      called: true,
+      isValid: false,
+      message: response.data.details,
+    };
+  } else if (response.data.status === 'deliverable') {
+    return {
+      deliverable: true,
+    };
+  }
 };
 
 const Delivery: FunctionComponent<DeliveryFormProps> = ({

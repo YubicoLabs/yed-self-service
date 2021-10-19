@@ -1,12 +1,6 @@
 import React, { FunctionComponent, useState } from 'react';
-import { Typography, Button, CircularProgress } from '@material-ui/core';
-import Stack from '@mui/material/Stack';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
-import invConfig from '../../../../inv-config';
-import { Box } from '@mui/system';
-import Card from '@mui/material/Card';
-import { CardContent, CardMedia } from '@mui/material';
 
 import { AddressFormValues } from '../address/address-form-values.interface';
 import { KeyDefaultValues } from '../key-default/key-default-values.interface';
@@ -18,7 +12,14 @@ import { AppRoutePath } from '../../../../routes/app-route-path';
 import { OrderRoutePath } from '../../routes/order-route-path';
 import { useHistory } from 'react-router-dom';
 
+import { Typography, Button, CircularProgress } from '@material-ui/core';
+import Stack from '@mui/material/Stack';
+import { Box } from '@mui/system';
+import Card from '@mui/material/Card';
+import { CardContent, CardMedia } from '@mui/material';
+
 import { API, Auth } from 'aws-amplify';
+import invConfig from '../../../../inv-config';
 
 const AddressDisplay: FunctionComponent<{ address: AddressFormValues }> = ({
   address,
@@ -95,38 +96,38 @@ export const Confirmation: FunctionComponent<ConfirmationProps> = ({
   }
   const submitOrder = async () => {
     setCalled(true);
-    //const token = (await Auth.currentSession()).getIdToken().getJwtToken();
+
+    const postBody = {
+      channelpartner_id: 1,
+      delivery_type: 1,
+      country_code_2: deliveryForm.shippingAddress.country,
+      recipient: `${deliveryForm.shippingAddress.firstName} ${deliveryForm.shippingAddress.lastName}`,
+      recipient_email: '',
+      recipient_firstname: deliveryForm.shippingAddress.firstName,
+      recipient_lastname: deliveryForm.shippingAddress.lastName,
+      recipient_telephone: '',
+      street_line1: deliveryForm.shippingAddress.addressLine1,
+      street_line2: deliveryForm.shippingAddress.addressLine2,
+      street_line3: '',
+      city: deliveryForm.shippingAddress.city,
+      region: deliveryForm.shippingAddress.provinceState,
+      postal_code: deliveryForm.shippingAddress.zipPostalCode,
+      shipment_items: [
+        {
+          product_id: keyDefault.product_id,
+          inventory_product_id: keyDefault.product_id,
+          shipment_product_quantity: 1,
+        },
+      ],
+    };
+    const token = (await Auth.currentSession()).getIdToken().getJwtToken();
     const apiName = 'yedselfsvcex';
     const path = '/order/create';
     const myInit = {
-      body: {
-        channelpartner_id: 1,
-        delivery_type: 1,
-        country_code_2: deliveryForm.shippingAddress.country,
-        recipient: `${deliveryForm.shippingAddress.firstName} ${deliveryForm.shippingAddress.lastName}`,
-        recipient_email: '',
-        recipient_firstname: deliveryForm.shippingAddress.firstName,
-        recipient_lastname: deliveryForm.shippingAddress.lastName,
-        recipient_telephone: '',
-        street_line1: deliveryForm.shippingAddress.addressLine1,
-        street_line2: deliveryForm.shippingAddress.addressLine2,
-        street_line3: '',
-        city: deliveryForm.shippingAddress.city,
-        region: deliveryForm.shippingAddress.provinceState,
-        postal_code: deliveryForm.shippingAddress.zipPostalCode,
-        shipment_items: [
-          {
-            product_id: keyDefault.product_id,
-            inventory_product_id: keyDefault.product_id,
-            shipment_product_quantity: 1,
-          },
-        ],
+      body: postBody,
+      headers: {
+        Authorization: `Bearer ${token}`,
       },
-      /*
-        headers: {
-            Authorization: `Bearer ${token}`
-        },
-        */
       response: true,
       queryStringParameters: {},
     };

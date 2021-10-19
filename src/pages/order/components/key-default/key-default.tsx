@@ -6,55 +6,34 @@ import { OrderRoutePath } from '../../routes/order-route-path';
 import { KeyDefaultValues } from './key-default-values.interface';
 import { connect } from 'react-redux';
 
+import { CircularProgress, Typography, Box } from '@material-ui/core';
+
+import { API, Auth } from 'aws-amplify';
+
 import {
   KeyDefaultProps,
   mapDispatchToProps,
   mapStateToProps,
 } from './key-default.props';
-import { CircularProgress, Typography, Box } from '@material-ui/core';
-
-import { API, Auth } from 'aws-amplify';
 
 let getDefaultKey = async (): Promise<KeyDefaultValues> => {
-  /*
-  const URL = `${process.env.REACT_APP_API_URL}/defaultinventory`;
-  const ret = await fetch(URL)
-    .then(
-      (response) => response.json(),
-      (error) => {
-        throw new Error(error);
-      }
-    )
-    .then((data) => {
-      console.log('Data is: ');
-      console.log(data);
-      return {
-        product_id: data.product_id,
-        product_name: data.product_name,
-        product_code: data.product_code,
-        product_tier: data.product_tier,
-        inventory_type: data.inventory_type,
-      };
-    });
-    */
-
   const token = (await Auth.currentSession()).getIdToken().getJwtToken();
   const apiName = 'yedselfsvcex';
   const path = '/defaultinventory';
   const myInit = {
     headers: {
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
     },
     response: true,
-    queryStringParameters: {}
-  }
-  const response =  await API.get(apiName, path, myInit);
+    queryStringParameters: {},
+  };
+  const response = await API.get(apiName, path, myInit);
   return {
     product_id: response.data.product_id,
-        product_name: response.data.product_name,
-        product_code: response.data.product_code,
-        product_tier: response.data.product_tier,
-        inventory_type: response.data.inventory_type,
+    product_name: response.data.product_name,
+    product_code: response.data.product_code,
+    product_tier: response.data.product_tier,
+    inventory_type: response.data.inventory_type,
   };
 };
 
