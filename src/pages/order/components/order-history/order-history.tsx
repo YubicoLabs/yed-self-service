@@ -1,5 +1,8 @@
 import React, { FunctionComponent, useState } from 'react';
 import { Auth, API } from 'aws-amplify';
+
+import { OrderStepper } from '../order-stepper/order-stepper';
+
 import {
   Container,
   Divider,
@@ -161,6 +164,8 @@ const OrderHistory: FunctionComponent = () => {
   }
 
   return (
+    <>
+    <OrderStepper />
     <Box mt={3}>
       <Container>
         <Typography variant='h4' component='legend' gutterBottom>
@@ -180,6 +185,7 @@ const OrderHistory: FunctionComponent = () => {
         </Box>
       </Container>
     </Box>
+    </>
   );
 };
 
