@@ -1,8 +1,17 @@
-const aws = require("aws-sdk");
-const axios = require("axios");
+/* Amplify Params - DO NOT EDIT
+	ENV
+	REGION
+	STORAGE_YEDSELFSVCDB_ARN
+	STORAGE_YEDSELFSVCDB_NAME
+	STORAGE_YEDSELFSVCDB_STREAMARN
+Amplify Params - DO NOT EDIT */
+const aws = require('aws-sdk');
+const axios = require('axios');
 
+const docClient = new aws.DynamoDB.DocumentClient();
 const YED_API_URL = process.env.YED_API_URL;
 const DEFAULT_PRODUCT_ID = process.env.DEFAULT_PRODUCT_ID;
+const TABLE_NAME = process.env.STORAGE_YEDSELFSVCDB_NAME;
 let YED_API_TOKEN;
 let YED_COOKIE;
 let API_HEADER;
@@ -34,17 +43,17 @@ async function getInventoryKeys() {
 async function getDefaultKey() {
   const res = await axios
     .get(`${YED_API_URL}/products/${DEFAULT_PRODUCT_ID}`, {
-      headers: API_HEADER
+      headers: API_HEADER,
     })
     .then(
       (response) => {
-        return response.data
+        return response.data;
       },
       (error) => {
         return error;
       }
-    )
-    return res
+    );
+  return res;
 }
 
 /**
@@ -71,22 +80,48 @@ async function getOrder(orderID) {
  * @param {Object} orderDetails - Object sent by the client containing details about the shipment to create
  * @returns An object with a summary of the order
  */
-async function createOrder(orderDetails) {
-  //TODO, may need to take in User Details in this method, or consider making a global variable on lambda call
-  //TODO, create mechanism for abuse prevention
-
+async function createOrder(orderDetails, userId) {
+  //Create Order
+  console.log('Making a change');
   const res = await axios
     .post(`${YED_API_URL}/shipments_exact`, orderDetails, {
       headers: API_HEADER,
     })
     .then((response) => {
-      //TODO, create mechanism to write details to a DB
-      return response.data;
+      //If successful add to the DB
+      try {
+        writeShipmentToDB(response.data.shipment_id, userId);
+        return response.data;
+      } catch (err) {
+        return error;
+      }
     })
-    .catch(({ response }) => {
-      return response.data;
+    .catch((error) => {
+      return error;
     });
   return res;
+}
+
+/**
+ * Use to write a new order to the database
+ * @param {string} shipmentId ID of the shipment to store in the DB
+ * @param {string} userId ID of the user to associate the order to
+ * @returns nothing if successful, or an error if the DB insert was unsuccessful
+ */
+async function writeShipmentToDB(shipmentId, userId) {
+  const params = {
+    TableName: TABLE_NAME,
+    Item: {
+      user_sub: userId,
+      shipment_id: shipmentId,
+    },
+  };
+
+  try {
+    await docClient.put(params).promise();
+  } catch (err) {
+    return err;
+  }
 }
 
 /**
@@ -96,15 +131,16 @@ async function createOrder(orderDetails) {
  * @returns An object containing the new shipment details
  */
 async function editOrder(orderDetails, orderID) {
-  const res = await axios .put(`${YED_API_URL}/shipments_exact/${orderID}`, orderDetails, {
-    headers: API_HEADER
-  })
-  .then((response) => {
-    return response.data;
-  })
-  .catch(({ response }) => {
-    return response.data;
-  });
+  const res = await axios
+    .put(`${YED_API_URL}/shipments_exact/${orderID}`, orderDetails, {
+      headers: API_HEADER,
+    })
+    .then((response) => {
+      return response.data;
+    })
+    .catch(({ response }) => {
+      return response.data;
+    });
   return res;
 }
 
@@ -114,16 +150,125 @@ async function editOrder(orderDetails, orderID) {
  * @returns Message stating whether the deletion was completed or an error
  */
 async function deleteOrder(orderID) {
-  const res = await axios.delete(`${YED_API_URL}/shipments_exact/${orderID}`, {
-    headers: API_HEADER
-  })
-  .then((response) => {
-    return response.data;
-  })
-  .catch(({ response }) => {
-    return response.data;
+  const res = await axios
+    .delete(`${YED_API_URL}/shipments_exact/${orderID}`, {
+      headers: API_HEADER,
+    })
+    .then((response) => {
+      return response.data;
+    })
+    .catch(({ response }) => {
+      return response.data;
+    });
+  return res;
+}
+
+/*
+async function getOrders(userSub) {
+  const params = {
+    TableName: TABLE_NAME,
+    FilterExpression: '#user = :sub',
+    ExpressionAttributeNames: {
+      '#user': 'user_sub',
+    },
+    ExpressionAttributeValues: {
+      ':sub': userSub,
+    },
+  };
+
+  let dynamoRes = {};
+  try {
+    dynamoRes = await docClient.scan(params).promise();
+  } catch (err) {
+    return err;
+  }
+
+  const shipmentIds = dynamoRes.Items;
+  if (shipmentIds.length === 0) {
+    return {
+      count: 0,
+      shipments: [],
+    };
+  }
+  let queryString = '';
+  shipmentIds.forEach((item) => {
+    queryString += `search=${item.shipment_id}&`;
   });
-  return res; 
+  queryString += 'search_field=shipment_id';
+
+  const res = await axios
+    .get(`${YED_API_URL}/shipments_exact?${queryString}`, {
+      headers: API_HEADER,
+    })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((err) => {
+      return err;
+    });
+  return res;
+}
+*/
+
+async function getOrders(userSub) {
+  const params = {
+    TableName: TABLE_NAME,
+    FilterExpression: '#user = :sub',
+    ExpressionAttributeNames: {
+      '#user': 'user_sub',
+    },
+    ExpressionAttributeValues: {
+      ':sub': userSub,
+    },
+  };
+
+  let dynamoRes = {};
+  try {
+    dynamoRes = await docClient.scan(params).promise();
+  } catch (err) {
+    return err;
+  }
+
+  const shipmentIds = dynamoRes.Items;
+  if (shipmentIds.length === 0) {
+    return {
+      count: 0,
+      shipments: [],
+    };
+  }
+
+  const promises = shipmentIds.map(item => {
+    return axios
+    .get(`${YED_API_URL}/shipments_exact/${item.shipment_id}`, {
+      headers: API_HEADER,
+    })
+    .then((response) => {
+      return response.data;
+    })
+    .catch(({ response }) => {
+      return response.data;
+    });
+  });
+  const value = Promise.all(promises).then((data) => {
+    return data
+  });
+
+  return value;
+}
+
+async function getAllOrders() {
+  const params = {
+    TableName: TABLE_NAME,
+  };
+
+  try {
+    const data = await docClient.scan(params).promise();
+    return {
+      data: data,
+    };
+  } catch (err) {
+    return err;
+  }
 }
 
 /**
@@ -151,7 +296,7 @@ exports.handler = async (event) => {
 
   const { Parameters } = await new aws.SSM()
     .getParameters({
-      Names: ["YED_API_TOKEN", "YED_COOKIE"].map(
+      Names: ['YED_API_TOKEN', 'YED_COOKIE'].map(
         (secretName) => process.env[secretName]
       ),
       WithDecryption: true,
@@ -161,51 +306,60 @@ exports.handler = async (event) => {
   let body;
   let statusCode = 200;
 
-  YED_API_TOKEN = Parameters[0]["Value"];
-  YED_COOKIE = Parameters[1]["Value"]; //Yubico only value needed for bypassing proxy
+  YED_API_TOKEN = Parameters[0]['Value'];
+  YED_COOKIE = Parameters[1]['Value']; //Yubico only value needed for bypassing proxy
   API_HEADER = {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
     Authorization: `Bearer ${YED_API_TOKEN}`,
     Cookie: YED_COOKIE,
   };
 
-  const httpMethod = event["httpMethod"];
-  const path = event["resource"];
+  const httpMethod = event['httpMethod'];
+  const path = event['resource'];
   const operation = `${httpMethod} ${path}`;
 
   try {
+    var sub = event.requestContext.authorizer
+      ? event.requestContext.authorizer.claims.sub
+      : undefined;
+
     switch (operation) {
-      case "GET /inventory":
+      case 'GET /inventory':
         body = await getInventoryKeys();
         break;
-      case "GET /defaultinventory":
+      case 'GET /defaultinventory':
         body = await getDefaultKey();
         break;
-      case "POST /address":
+      case 'POST /address':
         const userAddress = event.body;
         body = await verifyAddress(userAddress);
         break;
-      case "GET /order/{isbn}":
+      case 'GET /order/{isbn}':
         const orderID = event.pathParameters.isbn;
         body = await getOrder(orderID);
         break;
-      case "POST /order/{isbn}":
+      case 'POST /order/{isbn}':
         const orderDetails = event.body;
-        body = await createOrder(orderDetails);
+        body = await createOrder(orderDetails, sub);
         break;
-      case "PUT /order/{isbn}":
+      case 'PUT /order/{isbn}':
         const editOrderDetails = event.body;
         const editOrderID = event.pathParameters.isbn;
         body = await editOrder(editOrderDetails, editOrderID);
         break;
-      case "DELETE /order/{isbn}":
+      case 'DELETE /order/{isbn}':
         const deleteOrderID = event.pathParameters.isbn;
         body = await deleteOrder(deleteOrderID);
         break;
-      case "GET /orders":
-        //Will implement once we figure out our data storage decision 
+      case 'GET /orders':
+        //Will implement once we figure out our data storage decision
         //The primary reason for this method is to retrieve all orders belonging to a user
-        body = operation;
+        body = await getOrders(sub);
+        break;
+      case 'GET /allorders':
+        //Will implement once we figure out our data storage decision
+        //The primary reason for this method is to retrieve all orders belonging to a user
+        body = await getAllOrders();
         break;
       default:
         body = operation;
@@ -221,9 +375,9 @@ exports.handler = async (event) => {
   const response = {
     statusCode: statusCode,
     headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Headers": "*",
-      "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT",
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': '*',
+      'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,PUT',
     },
     body: body,
   };

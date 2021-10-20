@@ -3,7 +3,18 @@
     "yedselfsvcex": {
       "build": true,
       "providerPlugin": "awscloudformation",
-      "service": "Lambda"
+      "service": "Lambda",
+      "dependsOn": [
+        {
+          "category": "storage",
+          "resourceName": "yedselfsvcdb",
+          "attributes": [
+            "Name",
+            "Arn",
+            "StreamArn"
+          ]
+        }
+      ]
     }
   },
   "api": {
@@ -70,6 +81,12 @@
           ]
         }
       ]
+    }
+  },
+  "storage": {
+    "yedselfsvcdb": {
+      "service": "DynamoDB",
+      "providerPlugin": "awscloudformation"
     }
   }
 }

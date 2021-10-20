@@ -13,5 +13,15 @@
   "secretNames": [
     "YED_API_TOKEN",
     "YED_COOKIE"
-  ]
+  ],
+  "permissions": {
+    "storage": {
+      "yedselfsvcdb": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ]
+    }
+  }
 }

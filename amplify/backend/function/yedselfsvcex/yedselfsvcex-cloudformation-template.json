@@ -19,6 +19,18 @@
     "secretsPathAmplifyAppId": {
       "Type": "String"
     },
+    "storageyedselfsvcdbName": {
+      "Type": "String",
+      "Default": "storageyedselfsvcdbName"
+    },
+    "storageyedselfsvcdbArn": {
+      "Type": "String",
+      "Default": "storageyedselfsvcdbArn"
+    },
+    "storageyedselfsvcdbStreamArn": {
+      "Type": "String",
+      "Default": "storageyedselfsvcdbStreamArn"
+    },
     "yedApiUrl": {
       "Type": "String"
     },
@@ -122,6 +134,15 @@
                   "YED_COOKIE"
                 ]
               ]
+            },
+            "STORAGE_YEDSELFSVCDB_NAME": {
+              "Ref": "storageyedselfsvcdbName"
+            },
+            "STORAGE_YEDSELFSVCDB_ARN": {
+              "Ref": "storageyedselfsvcdbArn"
+            },
+            "STORAGE_YEDSELFSVCDB_STREAMARN": {
+              "Ref": "storageyedselfsvcdbStreamArn"
             },
             "YED_API_URL": {
               "Ref": "yedApiUrl"
@@ -280,6 +301,58 @@
       "DependsOn": [
         "LambdaExecutionRole"
       ]
+    },
+    "AmplifyResourcesPolicy": {
+      "DependsOn": [
+        "LambdaExecutionRole"
+      ],
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "amplify-lambda-execution-policy",
+        "Roles": [
+          {
+            "Ref": "LambdaExecutionRole"
+          }
+        ],
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "dynamodb:Put*",
+                "dynamodb:Create*",
+                "dynamodb:BatchWriteItem",
+                "dynamodb:Get*",
+                "dynamodb:BatchGetItem",
+                "dynamodb:List*",
+                "dynamodb:Describe*",
+                "dynamodb:Scan",
+                "dynamodb:Query",
+                "dynamodb:Update*",
+                "dynamodb:RestoreTable*",
+                "dynamodb:Delete*"
+              ],
+              "Resource": [
+                {
+                  "Ref": "storageyedselfsvcdbArn"
+                },
+                {
+                  "Fn::Join": [
+                    "/",
+                    [
+                      {
+                        "Ref": "storageyedselfsvcdbArn"
+                      },
+                      "index/*"
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
     }
   },
   "Outputs": {
