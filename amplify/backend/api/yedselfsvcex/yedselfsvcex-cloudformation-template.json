@@ -987,6 +987,12 @@
                     "schema": {
                       "$ref": "#/definitions/RequestSchema"
                     }
+                  },
+                  {
+                    "name": "Authorization",
+                    "in": "header",
+                    "required": false,
+                    "type": "string"
                   }
                 ],
                 "responses": {
@@ -997,6 +1003,12 @@
                     }
                   }
                 },
+
+                "security": [
+                  {
+                    "Cognito": []
+                  }
+                ],
                 
                 "x-amazon-apigateway-integration": {
                   "responses": {
@@ -1086,6 +1098,12 @@
                     "schema": {
                       "$ref": "#/definitions/RequestSchema"
                     }
+                  },
+                  {
+                    "name": "Authorization",
+                    "in": "header",
+                    "required": false,
+                    "type": "string"
                   }
                 ],
                 "responses": {
@@ -1096,6 +1114,12 @@
                     }
                   }
                 },
+
+                "security": [
+                  {
+                    "Cognito": []
+                  }
+                ],
                 
                 "x-amazon-apigateway-integration": {
                   "responses": {

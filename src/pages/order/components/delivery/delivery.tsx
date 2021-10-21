@@ -94,7 +94,6 @@ let VerifyAddress = async (address: AddressFormValues): Promise<any> => {
     queryStringParameters: {},
   };
   const response = await API.post(apiName, path, myInit);
-  console.log(response);
   if (response.data.status === 'undeliverable') {
     return {
       deliverable: false,

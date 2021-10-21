@@ -7,6 +7,7 @@
 Amplify Params - DO NOT EDIT */
 const aws = require('aws-sdk');
 const axios = require('axios');
+const { errorMonitor } = require('events');
 
 const docClient = new aws.DynamoDB.DocumentClient();
 const YED_API_URL = process.env.YED_API_URL;
@@ -82,7 +83,6 @@ async function getOrder(orderID) {
  */
 async function createOrder(orderDetails, userId) {
   //Create Order
-  console.log('Making a change');
   const res = await axios
     .post(`${YED_API_URL}/shipments_exact`, orderDetails, {
       headers: API_HEADER,
@@ -124,6 +124,21 @@ async function writeShipmentToDB(shipmentId, userId) {
   }
 }
 
+async function deleteShipmentFromDB(shipment_id) {
+  const params = {
+    TableName: TABLE_NAME,
+    Key: {
+      shipment_id: shipment_id
+    }
+  };
+
+  try {
+    await docClient.delete(params).promise();
+  } catch (err) {
+    return err;
+  }
+}
+
 /**
  * Method to edit an existing order
  * @param {Object} orderDetails - Object containing the new order details to edit
@@ -155,11 +170,13 @@ async function deleteOrder(orderID) {
       headers: API_HEADER,
     })
     .then((response) => {
+      deleteShipmentFromDB(orderID);
       return response.data;
     })
-    .catch(({ response }) => {
-      return response.data;
+    .catch((err) => {
+      return err;
     });
+
   return res;
 }
 
