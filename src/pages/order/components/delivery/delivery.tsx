@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 
 import { AppRoutePath } from '../../../../routes/app-route-path';
 import { OrderRoutePath } from '../../routes/order-route-path';
@@ -72,6 +72,29 @@ const KeyDisplay: FunctionComponent<{ keyDefault: KeyDefaultValues }> = ({
   );
 };
 
+const Loading: FunctionComponent = () => {
+  return (
+    <>
+      <Box
+        mt={4}
+        sx={{
+          display: 'grid',
+          gridTemplateRows: 'repeat(1, 1fr)',
+          justifyContent: 'center',
+          alignItems: 'center',
+          textAlign: 'center',
+        }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+          <CircularProgress />
+        </Box>
+        <Typography variant='h6' gutterBottom>
+          Setting up your order
+        </Typography>
+      </Box>
+    </>
+  )
+}
+
 let VerifyAddress = async (address: AddressFormValues): Promise<any> => {
   const postBody = {
     street_line1: address.addressLine1,
@@ -108,21 +131,81 @@ let VerifyAddress = async (address: AddressFormValues): Promise<any> => {
   }
 };
 
+const setEditOrder = async (id: string): Promise<any> => {
+  const token = (await Auth.currentSession()).getIdToken().getJwtToken();
+  const apiName = 'yedselfsvcex';
+  const path = `/order/${id}`;
+  const myInit = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    response: true,
+    queryStringParameters: {},
+  };
+  const response = await API.get(apiName, path, myInit);
+  return response.data;
+}
+
 const Delivery: FunctionComponent<DeliveryFormProps> = ({
   deliveryForm,
   submitDeliveryForm,
   clearDeliveryForm,
+  submitKeyDefault,
+  submitFormAction,
   keyDefault,
+  formAction,
+  clearEditOrderId,
+  submitEditOrderId,
+  editOrderId
+
 }) => {
   const [message, setMessage] = useState([{ description: '' }]);
   const [loading, setLoading] = useState(false);
   const [isValid, setIsValid] = useState(true);
   const { t } = useTranslation();
   const history = useHistory();
-  const [hasKey] = useState(keyDefault.product_id !== 0);
-  if (!hasKey) {
-    history.push(AppRoutePath.Order + OrderRoutePath.KeyDefault);
+  const { action, id } = useParams<{ action:string, id: string }>();
+  const [hasKey, setHasKey] = useState(keyDefault.product_id !== 0);
+
+  if(!hasKey && action !== 'edit') {
+    clearDeliveryForm();
+      clearEditOrderId();
+      history.push(AppRoutePath.Order + OrderRoutePath.KeyDefault);
   }
+  if(action === 'edit' && id !== editOrderId) {
+    clearDeliveryForm();
+    submitFormAction('edit');
+    setEditOrder(id).then((res) => {
+      const newAddrFV: AddressFormValues = {
+        firstName: res.recipient_firstname || "",
+        lastName: res.recipient_lastname || "",
+        addressLine1: res.street_line1,
+        addressLine2: res.street_line2 || "",
+        city: res.city,
+        provinceState: res.region,
+        country: res.country_code_2,
+        zipPostalCode: res.postal_code,
+      }
+      const newDFV: DeliveryFormValues = {
+        shippingAddress: newAddrFV
+      }
+
+      submitDeliveryForm(newDFV);
+      const newKeyDef: KeyDefaultValues = {
+        product_id: res.shipment_items[0].product_id,
+        product_name: res.shipment_items[0].product_name,
+        product_code: res.shipment_items[0].product_code || "undef",
+        product_tier: res.shipment_items[0].product_tier,
+        inventory_type: res.shipment_items[0].inventory_type,
+        product_quantity: res.shipment_items[0].shipment_product_quantity
+      }
+      submitKeyDefault(newKeyDef);
+      submitEditOrderId(res.shipment_id)
+      setHasKey(keyDefault.product_id !== 0);
+    });
+
+  } 
+
   const submitForm = (values: DeliveryFormValues) => {
     setLoading(true);
     submitDeliveryForm(values);
@@ -135,6 +218,7 @@ const Delivery: FunctionComponent<DeliveryFormProps> = ({
         return;
       } else {
         if (res.deliverable) {
+          console.log("The sending action is: " + formAction)
           history.push(AppRoutePath.Order + OrderRoutePath.Confirmation);
         } else {
           setIsValid(false);
@@ -147,7 +231,7 @@ const Delivery: FunctionComponent<DeliveryFormProps> = ({
 
   return (
     <>
-      {!hasKey && <></>}
+      {!hasKey && <><Loading /></>}
       {hasKey && (
         <>
           <OrderStepper />
@@ -185,70 +269,70 @@ const Delivery: FunctionComponent<DeliveryFormProps> = ({
             )}
           </Box>
           <Formik
-            enableReinitialize={true}
-            validationSchema={deliveryFormSchema(t)}
-            initialValues={deliveryForm}
-            onSubmit={submitForm}>
-            {({ errors, touched, values }) => (
-              <Form>
-                <DeliveryFormControl>
-                  <Typography variant='h5' component='legend' gutterBottom>
-                    {t('order.shippingAddress')}
-                  </Typography>
-                  <AddressForm
-                    formName='shippingAddress'
-                    errors={errors.shippingAddress}
-                    touched={touched.shippingAddress}
-                  />
-                </DeliveryFormControl>
-                <Box
-                  sx={{
-                    display: 'grid',
-                    gridAutoColumns: '1fr',
-                    gap: 1,
-                  }}
-                  mt={3}>
-                  <Box sx={{ gridRow: '1', gridColumn: 'span 1' }}>
+          enableReinitialize={true}
+          validationSchema={deliveryFormSchema(t)}
+          initialValues={deliveryForm}
+          onSubmit={submitForm}>
+          {({ errors, touched, values }) => (
+            <Form>
+              <DeliveryFormControl>
+                <Typography variant='h5' component='legend' gutterBottom>
+                  {t('order.shippingAddress')}
+                </Typography>
+                <AddressForm
+                  formName='shippingAddress'
+                  errors={errors.shippingAddress}
+                  touched={touched.shippingAddress}
+                />
+              </DeliveryFormControl>
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridAutoColumns: '1fr',
+                  gap: 1,
+                }}
+                mt={3}>
+                <Box sx={{ gridRow: '1', gridColumn: 'span 1' }}>
+                  <Button
+                    type='reset'
+                    variant='contained'
+                    endIcon={<ClearIcon />}
+                    size='small'
+                    onClick={clearDeliveryForm}>
+                    {t('order.clear')}
+                  </Button>
+                </Box>
+                {!loading && (
+                  <Box
+                    sx={{
+                      gridRow: '1',
+                      gridColumn: 'span 1',
+                      textAlign: 'right',
+                    }}>
                     <Button
-                      type='reset'
+                      type='submit'
                       variant='contained'
-                      endIcon={<ClearIcon />}
-                      size='small'
-                      onClick={clearDeliveryForm}>
-                      {t('order.clear')}
+                      color='primary'
+                      endIcon={<ArrowRightAltIcon />}
+                      size='large'>
+                      {t('order.validate-address')}
                     </Button>
                   </Box>
-                  {!loading && (
-                    <Box
-                      sx={{
-                        gridRow: '1',
-                        gridColumn: 'span 1',
-                        textAlign: 'right',
-                      }}>
-                      <Button
-                        type='submit'
-                        variant='contained'
-                        color='primary'
-                        endIcon={<ArrowRightAltIcon />}
-                        size='large'>
-                        {t('order.validate-address')}
-                      </Button>
-                    </Box>
-                  )}
-                  {loading && (
-                    <Box
-                      sx={{
-                        gridRow: '1',
-                        gridColumn: 'span 1',
-                        textAlign: 'right',
-                      }}>
-                      <CircularProgress />
-                    </Box>
-                  )}
-                </Box>
-              </Form>
-            )}
-          </Formik>
+                )}
+                {loading && (
+                  <Box
+                    sx={{
+                      gridRow: '1',
+                      gridColumn: 'span 1',
+                      textAlign: 'right',
+                    }}>
+                    <CircularProgress />
+                  </Box>
+                )}
+              </Box>
+            </Form>
+          )}
+        </Formik>
         </>
       )}
     </>

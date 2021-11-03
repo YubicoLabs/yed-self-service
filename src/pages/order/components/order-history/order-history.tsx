@@ -54,6 +54,16 @@ const OrderCard: FunctionComponent<{
   t: any;
   refreshList: any;
 }> = ({ orderDetails, t, refreshList }) => {
+  const orderID = orderDetails.shipment_id;
+
+  const history = useHistory();
+
+  const handleEdit = () => {
+    history.push(
+      AppRoutePath.Order + OrderRoutePath.Delivery + `/edit/${orderID}`
+    );
+  };
+
   return (
     <Card>
       <CardContent sx={{ bgcolor: '#f5f5f5' }}>
@@ -122,10 +132,10 @@ const OrderCard: FunctionComponent<{
                   )}
                   {orderDetails.shipment_state_id <= 9 && (
                     <Button
-                      variant='contained'
-                      target='_blank'
-                      href={orderDetails.tracking_link}
-                      color='primary'>
+                      type='button'
+                      variant='outlined'
+                      color='primary'
+                      onClick={handleEdit}>
                       Edit Shipment
                     </Button>
                   )}
@@ -136,13 +146,15 @@ const OrderCard: FunctionComponent<{
                       refreshList={refreshList}
                     />
                   )}
+                  {orderDetails.tracking_link && (
                   <Button
-                    variant='contained'
-                    target='_blank'
-                    href={orderDetails.tracking_link}
-                    color='primary'>
-                    Track your package
-                  </Button>
+                  variant='contained'
+                  target='_blank'
+                  href={orderDetails.tracking_link}
+                  color='primary'>
+                  Track your package
+                </Button>
+                  )}
                 </Stack>
               </Grid>
             </Grid>
@@ -259,127 +271,6 @@ const DeleteModal: FunctionComponent<{
   );
 };
 
-const orderTest = {
-  shipment_id: 'Tyy568meWkHReGSvkEhK2',
-  shipment_items: [
-    {
-      shipment_product_id: '4ovpK6emQRkA1sgYECwPw2',
-      inventory_product_id: 5,
-      shipment_id: 'FgriZs8meWkHReGSvkEhK2',
-      product_id: 5,
-      product_name: 'YubiKey 5Ci',
-      product_sku: '5060408461969',
-      product_tier: 3,
-      shipment_product_quantity: 1,
-      shipment_product_line_cost: 5000,
-    },
-  ],
-  organization_id: 'RUjzDraV1ud9bhLNhjeEW',
-  channelpartner_id: 1,
-  channelpartner_name: 'Yubico (Direct sale)',
-  user_email: 'c.salas@yubico.com',
-  user_id: 'Qj8c5cZNwZtNe8zejeJxfp',
-  country_code_2: 'US',
-  is_delivered: false,
-  is_post_pay: true,
-  is_sent_to_fulfillment: true,
-  is_shipped: true,
-  recipient: 'Cody Salas',
-  recipient_firstname: 'Cody',
-  recipient_lastname: 'Salas',
-  street_line1: '1111 Rusk St',
-  street_line2: '1116',
-  city: 'Houston',
-  region: 'TX',
-  postal_code: '77002',
-  suggest_street_line1: '1111 RUSK ST',
-  suggest_street_line2: 'APT 1116',
-  suggest_city: 'HOUSTON',
-  suggest_region: 'TX',
-  suggest_postal_code: '77002-3447',
-  delivery_type: 1,
-  carrier: 'FEDEX',
-  tracking_number: 'TESTFEDEXGROUND',
-  tracking_link:
-    'https://www.fedex.com/apps/fedextrack/index.html?tracknumbers=TESTFEDEXGROUND',
-  shipped_date: '2020-02-04T00:00:00Z',
-  shipment_state_code: 'ShipmentStateShipped',
-  shipment_state_id: 9,
-  shipment_state_message: 'Shipped: In transit.',
-  shipment_summary_description: 'Total Keys: 1 yk5ci:1',
-  shipment_request_date: '2021-10-18T15:38:34.397Z',
-  shipment_updated_date: '2021-10-18T16:00:41.965Z',
-  shipment_product_cost: 5000,
-  shipment_product_taxes: 413,
-  shipping_service_cost: 1000,
-  shipping_service_taxes: 83,
-  total_shipment_product_cost: 5413,
-  total_shipment_tax_cost: 496,
-  total_shipping_service_cost: 1083,
-  total_keys_shipped: 1,
-};
-
-const orderTest2 = {
-  shipment_id: 'UUih68meWkHReGSvkEhK2',
-  shipment_items: [
-    {
-      shipment_product_id: '4ovpK6emQRkA1sgYECwPw2',
-      inventory_product_id: 5,
-      shipment_id: 'FgriZs8meWkHReGSvkEhK2',
-      product_id: 5,
-      product_name: 'YubiKey 5Ci',
-      product_sku: '5060408461969',
-      product_tier: 3,
-      shipment_product_quantity: 1,
-      shipment_product_line_cost: 5000,
-    },
-  ],
-  organization_id: 'RUjzDraV1ud9bhLNhjeEW',
-  channelpartner_id: 1,
-  channelpartner_name: 'Yubico (Direct sale)',
-  user_email: 'c.salas@yubico.com',
-  user_id: 'Qj8c5cZNwZtNe8zejeJxfp',
-  country_code_2: 'US',
-  is_delivered: true,
-  is_post_pay: true,
-  is_sent_to_fulfillment: true,
-  is_shipped: true,
-  recipient: 'Cody Salas',
-  recipient_firstname: 'Cody',
-  recipient_lastname: 'Salas',
-  street_line1: '1111 Rusk St',
-  street_line2: '1116',
-  city: 'Houston',
-  region: 'TX',
-  postal_code: '77002',
-  suggest_street_line1: '1111 RUSK ST',
-  suggest_street_line2: 'APT 1116',
-  suggest_city: 'HOUSTON',
-  suggest_region: 'TX',
-  suggest_postal_code: '77002-3447',
-  delivery_type: 1,
-  delivered_date: '2021-10-20T14:15:22Z',
-  carrier: 'FEDEX',
-  tracking_number: 'TESTFEDEXGROUND',
-  tracking_link:
-    'https://www.fedex.com/apps/fedextrack/index.html?tracknumbers=TESTFEDEXGROUND',
-  shipped_date: '2020-02-04T00:00:00Z',
-  shipment_state_code: 'ShipmentStateShipped',
-  shipment_state_id: 103,
-  shipment_state_message: 'Shipped: In transit.',
-  shipment_summary_description: 'Total Keys: 1 yk5ci:1',
-  shipment_request_date: '2021-10-18T15:38:34.397Z',
-  shipment_updated_date: '2021-10-18T16:00:41.965Z',
-  shipment_product_cost: 5000,
-  shipment_product_taxes: 413,
-  shipping_service_cost: 1000,
-  shipping_service_taxes: 83,
-  total_shipment_product_cost: 5413,
-  total_shipment_tax_cost: 496,
-  total_shipping_service_cost: 1083,
-  total_keys_shipped: 1,
-};
-
 const OrderHistory: FunctionComponent = () => {
   const { t } = useTranslation();
   const [orderList, setOrderList] = useState([]);
@@ -391,9 +282,12 @@ const OrderHistory: FunctionComponent = () => {
       setLoading(true);
     }
     const orders = await getOrders();
-    //orders.push(orderTest2);
-    //orders.push(orderTest);
-    setOrderList(orders);
+
+    const orders_sorted = orders.sort(function(a: any, b: any) {
+      return Date.parse(a.shipment_request_date) - Date.parse(b.shipment_request_date);
+    });
+
+    setOrderList(orders_sorted.reverse());
     setLoading(false);
   };
 

@@ -34,17 +34,20 @@ let getDefaultKey = async (): Promise<KeyDefaultValues> => {
     product_code: response.data.product_code,
     product_tier: response.data.product_tier,
     inventory_type: response.data.inventory_type,
+    product_quantity: 1
   };
 };
 
 const KeyDefault: FunctionComponent<KeyDefaultProps> = ({
   submitKeyDefault,
+  submitFormAction
 }) => {
   const { t } = useTranslation();
   const history = useHistory();
 
   const submitKey = (values: KeyDefaultValues) => {
     submitKeyDefault(values);
+    submitFormAction('create');
     history.push(AppRoutePath.Order + OrderRoutePath.Delivery);
   };
 

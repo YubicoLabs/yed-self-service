@@ -5,5 +5,7 @@ import { OrderState } from "./order-state.interface";
 
 export const initialOrderState: OrderState = {
   deliveryForm: initialDevlieryFormValues,
-  keydefault: initialKeyDefaultValues
+  keydefault: initialKeyDefaultValues,
+  formAction: 'default',
+  editOrderId: ''
 };

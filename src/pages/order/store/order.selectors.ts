@@ -18,8 +18,20 @@ const getKeyDefault = createSelector(
   (orderState: OrderState): KeyDefaultValues => orderState?.keydefault
 );
 
+const getFormAction = createSelector(
+  getOrderState,
+  (orderState: OrderState): string => orderState?.formAction
+);
+
+const getEditOrderId = createSelector(
+  getOrderState,
+  (orderState: OrderState): string => orderState?.editOrderId
+);
+
 export const orderSelectors = {
   getOrderState,
   getDeliveryForm,
-  getKeyDefault
+  getKeyDefault,
+  getFormAction,
+  getEditOrderId
 };

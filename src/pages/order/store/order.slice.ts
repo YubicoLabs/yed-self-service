@@ -27,6 +27,24 @@ export const orderSlice = createSlice({
     },
     clearKeyDefault(state: OrderState) {
       state.keydefault = initialOrderState.keydefault
+    },
+    submitFormAction(
+      state: OrderState,
+      action: PayloadAction<string>
+    ) {
+      state.formAction = action.payload;
+    },
+    clearFormAction(state: OrderState) {
+      state.formAction = 'create'
+    },
+    submitEditOrderId(
+      state: OrderState,
+      action: PayloadAction<string>
+    ) {
+      state.editOrderId = action.payload;
+    },
+    clearEditOrderId(state: OrderState) {
+      state.editOrderId = ''
     }
   },
 });

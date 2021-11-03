@@ -4,4 +4,6 @@ import { KeyDefaultValues } from "../components/key-default/key-default-values.i
 export interface OrderState {
   deliveryForm: DeliveryFormValues;
   keydefault: KeyDefaultValues;
+  formAction: string,
+  editOrderId: string
 }

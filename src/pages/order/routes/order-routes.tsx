@@ -19,6 +19,9 @@ export default function OrderRoutes() {
   return (
     <BrowserRouter>
       <Switch>
+        <Route path={path + OrderRoutePath.Delivery + '/:action/:id'}>
+          <Delivery />
+        </Route>
         <Route path={path + OrderRoutePath.Delivery}>
           <Delivery />
         </Route>
@@ -27,6 +30,9 @@ export default function OrderRoutes() {
         </Route>
         <Route path={path + OrderRoutePath.AddressValidate}>
           <AddressValidate />
+        </Route>
+        <Route path={path + OrderRoutePath.Confirmation + '/:action/:id'}>
+          <Confirmation />
         </Route>
         <Route path={path + OrderRoutePath.Confirmation}>
           <Confirmation />

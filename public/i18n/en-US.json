@@ -10,7 +10,8 @@
       "previous": "Previous",
       "clear": "Clear",
       "item": "Your key:",
-      "loading": "Verifying Address"
+      "loading": "Verifying Address",
+      "edit-order": "Order ID: "
     },
     "key-default": {
       "getting-key": "Hold tight, we're grabbing your key"
@@ -39,6 +40,7 @@
       "clear": "Clear",
       "customer-name": "Name",
       "place-order": "Place Order",
+      "edit-order": "Edit Order",
       "correct-address": "Edit Address",
       "order-submit": "Hold tight while we place your order!"
     },

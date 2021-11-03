@@ -6,4 +6,5 @@ export const initialKeyDefaultValues: KeyDefaultValues = {
   product_code: '',
   product_tier: 0,
   inventory_type: 0,
+  product_quantity: 1
 };

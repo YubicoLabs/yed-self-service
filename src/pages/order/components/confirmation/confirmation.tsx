@@ -86,6 +86,8 @@ const keyCustomDescription = (prodName: string): string => {
 export const Confirmation: FunctionComponent<ConfirmationProps> = ({
   deliveryForm,
   keyDefault,
+  formAction,
+  editOrderId,
 }) => {
   const { t } = useTranslation();
   const history = useHistory();
@@ -116,7 +118,7 @@ export const Confirmation: FunctionComponent<ConfirmationProps> = ({
         {
           product_id: keyDefault.product_id,
           inventory_product_id: keyDefault.product_id,
-          shipment_product_quantity: 1,
+          shipment_product_quantity: keyDefault.product_quantity,
         },
       ],
     };
@@ -135,6 +137,49 @@ export const Confirmation: FunctionComponent<ConfirmationProps> = ({
     await API.post(apiName, path, myInit);
     history.push(AppRoutePath.Order + OrderRoutePath.OrderHistory);
   };
+
+  const editOrder = async () => {
+    setCalled(true);
+
+    const postBody = {
+      channelpartner_id: 1,
+      delivery_type: 1,
+      country_code_2: deliveryForm.shippingAddress.country,
+      recipient: `${deliveryForm.shippingAddress.firstName} ${deliveryForm.shippingAddress.lastName}`,
+      recipient_email: '',
+      recipient_firstname: deliveryForm.shippingAddress.firstName,
+      recipient_lastname: deliveryForm.shippingAddress.lastName,
+      recipient_telephone: '',
+      street_line1: deliveryForm.shippingAddress.addressLine1,
+      street_line2: deliveryForm.shippingAddress.addressLine2,
+      street_line3: '',
+      city: deliveryForm.shippingAddress.city,
+      region: deliveryForm.shippingAddress.provinceState,
+      postal_code: deliveryForm.shippingAddress.zipPostalCode,
+      shipment_items: [
+        {
+          product_id: keyDefault.product_id,
+          inventory_product_id: keyDefault.product_id,
+          shipment_product_quantity: keyDefault.product_quantity,
+        },
+      ],
+    };
+    const token = (await Auth.currentSession()).getIdToken().getJwtToken();
+    const apiName = 'yedselfsvcex';
+    const path = `/order/${editOrderId}`;
+    const myInit = {
+      body: postBody,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      response: true,
+      queryStringParameters: {},
+    };
+
+  await API.put(apiName, path, myInit);
+  history.push(AppRoutePath.Order + OrderRoutePath.OrderHistory);
+};
+
   const editAddress = () => {
     history.push(AppRoutePath.Order + OrderRoutePath.Delivery);
   };
@@ -153,6 +198,16 @@ export const Confirmation: FunctionComponent<ConfirmationProps> = ({
                 justifyContent: 'center',
                 alignItems: 'center',
               }}>
+              {formAction === 'edit' && (
+                <>
+                  <Typography variant='h4' component='legend' gutterBottom>
+                    {t('order.edit-order')}
+                  </Typography>
+                  <Typography variant='h5' component='legend' gutterBottom>
+                    {editOrderId}
+                  </Typography>
+                </>
+              )}
               <Typography variant='h4' component='legend' gutterBottom>
                 {t('order.item')}
               </Typography>
@@ -180,6 +235,29 @@ export const Confirmation: FunctionComponent<ConfirmationProps> = ({
                     {t('checkout.correct-address')}
                   </Button>
                 </Box>
+                {formAction === 'edit' && (
+                <>
+                  <>
+                <Box
+                  sx={{
+                    gridRow: '1',
+                    gridColumn: 'span 1',
+                    textAlign: 'right',
+                  }}>
+                  <Button
+                    type='button'
+                    variant='contained'
+                    color='primary'
+                    size='large'
+                    onClick={editOrder}>
+                    {t('checkout.edit-order')}
+                  </Button>
+                </Box>
+                </>
+                </>
+              )}
+              {formAction === 'create' && (
+                <>
                 <Box
                   sx={{
                     gridRow: '1',
@@ -195,6 +273,9 @@ export const Confirmation: FunctionComponent<ConfirmationProps> = ({
                     {t('checkout.place-order')}
                   </Button>
                 </Box>
+                </>
+              )}
+
               </Box>
             </Box>
           )}

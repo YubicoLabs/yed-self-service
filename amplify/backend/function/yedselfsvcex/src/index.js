@@ -1,3 +1,17 @@
+/*
+Use the following code to retrieve configured secrets from SSM:
+
+const aws = require('aws-sdk');
+
+const { Parameters } = await (new aws.SSM())
+  .getParameters({
+    Names: ["YED_API_TOKEN","YED_COOKIE"].map(secretName => process.env[secretName]),
+    WithDecryption: true,
+  })
+  .promise();
+
+Parameters will be of the form { Name: 'secretName', Value: 'secretValue', ... }[]
+*/
 /* Amplify Params - DO NOT EDIT
 	ENV
 	REGION
@@ -179,53 +193,6 @@ async function deleteOrder(orderID) {
 
   return res;
 }
-
-/*
-async function getOrders(userSub) {
-  const params = {
-    TableName: TABLE_NAME,
-    FilterExpression: '#user = :sub',
-    ExpressionAttributeNames: {
-      '#user': 'user_sub',
-    },
-    ExpressionAttributeValues: {
-      ':sub': userSub,
-    },
-  };
-
-  let dynamoRes = {};
-  try {
-    dynamoRes = await docClient.scan(params).promise();
-  } catch (err) {
-    return err;
-  }
-
-  const shipmentIds = dynamoRes.Items;
-  if (shipmentIds.length === 0) {
-    return {
-      count: 0,
-      shipments: [],
-    };
-  }
-  let queryString = '';
-  shipmentIds.forEach((item) => {
-    queryString += `search=${item.shipment_id}&`;
-  });
-  queryString += 'search_field=shipment_id';
-
-  const res = await axios
-    .get(`${YED_API_URL}/shipments_exact?${queryString}`, {
-      headers: API_HEADER,
-    })
-    .then((response) => {
-      return response.data;
-    })
-    .catch((err) => {
-      return err;
-    });
-  return res;
-}
-*/
 
 async function getOrders(userSub) {
   const params = {

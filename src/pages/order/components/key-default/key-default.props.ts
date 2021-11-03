@@ -9,6 +9,7 @@ import { KeyDefaultValues } from './key-default-values.interface';
 const mapStateToProps = (state: RootState) => {
   return {
     defaultKey: orderSelectors.getKeyDefault(state),
+    formAction: orderSelectors.getFormAction(state)
   };
 };
 
@@ -19,6 +20,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     },
     clearKeyDefault() {
       dispatch(orderSlice.actions.clearKeyDefault());
+    },
+    submitFormAction(values: string) {
+      dispatch(orderSlice.actions.submitFormAction(values));
     },
   };
 };

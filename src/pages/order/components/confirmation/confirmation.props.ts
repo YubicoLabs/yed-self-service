@@ -5,6 +5,8 @@ const mapStateToProps = (state: RootState) => {
   return {
     deliveryForm: orderSelectors.getDeliveryForm(state),
     keyDefault: orderSelectors.getKeyDefault(state),
+    formAction: orderSelectors.getFormAction(state),
+    editOrderId: orderSelectors.getEditOrderId(state)
   };
 };
 
