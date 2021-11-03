@@ -11,7 +11,8 @@
       "clear": "Clear",
       "item": "Your key:",
       "loading": "Verifying Address",
-      "edit-order": "Order ID: "
+      "edit-order": "Order ID: ",
+      "setting-order": "Setting up your order"
     },
     "key-default": {
       "getting-key": "Hold tight, we're grabbing your key"
@@ -49,7 +50,13 @@
       "order-placed": "Order Placed",
       "ship-to": "Ship To",
       "order-number": "Order #",
-      "track-package": "Track Package"
+      "track-package": "Track Package",
+      "order-arrived": "Your shipment arrived",
+      "edit-shipment": "Edit Shipment",
+      "track-your-package": "Track your package",
+      "delete-order": "Delete Order",
+      "sure-delete": "Are you sure you want to delete order #",
+      "close": "Close"
     },
     "errorMessages": {
       "required": "{{- fieldName}} is required",

@@ -51,10 +51,10 @@ const formatDate = (dateTime: string): string => {
 
 const OrderCard: FunctionComponent<{
   orderDetails: any;
-  t: any;
   refreshList: any;
-}> = ({ orderDetails, t, refreshList }) => {
+}> = ({ orderDetails, refreshList }) => {
   const orderID = orderDetails.shipment_id;
+  const { t } = useTranslation();
 
   const history = useHistory();
 
@@ -126,7 +126,7 @@ const OrderCard: FunctionComponent<{
                 <Stack spacing={1}>
                   {orderDetails.is_delivered && (
                     <Alert severity='success'>
-                      Your shipment arrived{' '}
+                      {t('order-history.order-arrived')}{' '}
                       {formatDate(orderDetails.delivered_date)}
                     </Alert>
                   )}
@@ -136,13 +136,12 @@ const OrderCard: FunctionComponent<{
                       variant='outlined'
                       color='primary'
                       onClick={handleEdit}>
-                      Edit Shipment
+                       {t('order-history.edit-shipment')}
                     </Button>
                   )}
                   {orderDetails.shipment_state_id <= 9 && (
                     <DeleteModal
                       orderDetails={orderDetails}
-                      t={t}
                       refreshList={refreshList}
                     />
                   )}
@@ -152,7 +151,7 @@ const OrderCard: FunctionComponent<{
                   target='_blank'
                   href={orderDetails.tracking_link}
                   color='primary'>
-                  Track your package
+                  {t('order-history.track-your-package')}
                 </Button>
                   )}
                 </Stack>
@@ -202,18 +201,18 @@ const AddressDisplay: FunctionComponent<{ orderDetails: any }> = ({
 
 const DeleteModal: FunctionComponent<{
   orderDetails: any;
-  t: any;
   refreshList: any;
-}> = ({ orderDetails, t, refreshList }) => {
+}> = ({ orderDetails, refreshList }) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const { t } = useTranslation();
 
   return (
     <>
       <Button onClick={handleOpen} variant='contained' color='error'>
-        Delete Order
+      {t('order-history.delete-order')}
       </Button>
       <Modal
         open={open}
@@ -234,7 +233,7 @@ const DeleteModal: FunctionComponent<{
           }}>
           <Stack spacing={2}>
             <Typography id='modal-modal-title' variant='h6' component='h2'>
-              Are you sure you want to delete order #{orderDetails.shipment_id}?
+            {t('order-history.sure-delete')}
             </Typography>
             {loading && (
               <Box sx={{ display: 'flex', justifyContent: 'center' }} mt={2}>
@@ -253,14 +252,14 @@ const DeleteModal: FunctionComponent<{
                     handleClose();
                     refreshList();
                   }}>
-                  Delete Order
+                  {t('order-history.delete-order')}
                 </Button>
                 <Button
                   type='button'
                   variant='outlined'
                   color='primary'
                   onClick={handleClose}>
-                  Close
+                  {t('order-history.close')}
                 </Button>
               </>
             )}
@@ -319,7 +318,6 @@ const OrderHistory: FunctionComponent = () => {
                       <OrderCard
                         key={index}
                         orderDetails={item}
-                        t={t}
                         refreshList={refreshList}></OrderCard>
                     );
                   })}

@@ -93,12 +93,13 @@ export const Confirmation: FunctionComponent<ConfirmationProps> = ({
   const history = useHistory();
   const [called, setCalled] = useState(false);
   const [hasKey] = useState(keyDefault.product_id !== 0);
+  
   if (!hasKey) {
     history.push(AppRoutePath.Order + OrderRoutePath.KeyDefault);
   }
+
   const submitOrder = async () => {
     setCalled(true);
-
     const postBody = {
       channelpartner_id: 1,
       delivery_type: 1,
@@ -122,6 +123,7 @@ export const Confirmation: FunctionComponent<ConfirmationProps> = ({
         },
       ],
     };
+
     const token = (await Auth.currentSession()).getIdToken().getJwtToken();
     const apiName = 'yedselfsvcex';
     const path = '/order/create';
@@ -140,7 +142,6 @@ export const Confirmation: FunctionComponent<ConfirmationProps> = ({
 
   const editOrder = async () => {
     setCalled(true);
-
     const postBody = {
       channelpartner_id: 1,
       delivery_type: 1,
@@ -164,6 +165,7 @@ export const Confirmation: FunctionComponent<ConfirmationProps> = ({
         },
       ],
     };
+
     const token = (await Auth.currentSession()).getIdToken().getJwtToken();
     const apiName = 'yedselfsvcex';
     const path = `/order/${editOrderId}`;
@@ -176,13 +178,14 @@ export const Confirmation: FunctionComponent<ConfirmationProps> = ({
       queryStringParameters: {},
     };
 
-  await API.put(apiName, path, myInit);
-  history.push(AppRoutePath.Order + OrderRoutePath.OrderHistory);
-};
+    await API.put(apiName, path, myInit);
+    history.push(AppRoutePath.Order + OrderRoutePath.OrderHistory);
+  };
 
   const editAddress = () => {
     history.push(AppRoutePath.Order + OrderRoutePath.Delivery);
   };
+  
   return (
     <>
       {!hasKey && <></>}
@@ -236,46 +239,45 @@ export const Confirmation: FunctionComponent<ConfirmationProps> = ({
                   </Button>
                 </Box>
                 {formAction === 'edit' && (
-                <>
                   <>
-                <Box
-                  sx={{
-                    gridRow: '1',
-                    gridColumn: 'span 1',
-                    textAlign: 'right',
-                  }}>
-                  <Button
-                    type='button'
-                    variant='contained'
-                    color='primary'
-                    size='large'
-                    onClick={editOrder}>
-                    {t('checkout.edit-order')}
-                  </Button>
-                </Box>
-                </>
-                </>
-              )}
-              {formAction === 'create' && (
-                <>
-                <Box
-                  sx={{
-                    gridRow: '1',
-                    gridColumn: 'span 1',
-                    textAlign: 'right',
-                  }}>
-                  <Button
-                    type='button'
-                    variant='contained'
-                    color='primary'
-                    size='large'
-                    onClick={submitOrder}>
-                    {t('checkout.place-order')}
-                  </Button>
-                </Box>
-                </>
-              )}
-
+                    <>
+                      <Box
+                        sx={{
+                          gridRow: '1',
+                          gridColumn: 'span 1',
+                          textAlign: 'right',
+                        }}>
+                        <Button
+                          type='button'
+                          variant='contained'
+                          color='primary'
+                          size='large'
+                          onClick={editOrder}>
+                          {t('checkout.edit-order')}
+                        </Button>
+                      </Box>
+                    </>
+                  </>
+                )}
+                {formAction === 'create' && (
+                  <>
+                    <Box
+                      sx={{
+                        gridRow: '1',
+                        gridColumn: 'span 1',
+                        textAlign: 'right',
+                      }}>
+                      <Button
+                        type='button'
+                        variant='contained'
+                        color='primary'
+                        size='large'
+                        onClick={submitOrder}>
+                        {t('checkout.place-order')}
+                      </Button>
+                    </Box>
+                  </>
+                )}
               </Box>
             </Box>
           )}
