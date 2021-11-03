@@ -181,11 +181,14 @@ const Delivery: FunctionComponent<DeliveryFormProps> = ({
   const { action, id } = useParams<{ action: string; id: string }>();
   const [hasKey, setHasKey] = useState(keyDefault.product_id !== 0);
 
+  //If no key has been selected, and this is not an edit operation, then redirect the user to the key default screen to select a key
   if (!hasKey && action !== 'edit') {
     clearDeliveryForm();
     clearEditOrderId();
     history.push(AppRoutePath.Order + OrderRoutePath.KeyDefault);
   }
+  //If the user is going to edit, and the ID of the edit order doesn't match what has already been set, then pull the information related to the order
+  //Otherwise, continue to use the information that was already pulled
   if (action === 'edit' && id !== editOrderId) {
     clearDeliveryForm();
     submitFormAction('edit');

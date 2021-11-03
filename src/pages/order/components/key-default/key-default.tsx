@@ -16,6 +16,10 @@ import {
   mapStateToProps,
 } from './key-default.props';
 
+/**
+ * Calls to the default key API that is configured in the lambda 
+ * @returns the product information for the default key set by the organization
+ */
 let getDefaultKey = async (): Promise<KeyDefaultValues> => {
   const token = (await Auth.currentSession()).getIdToken().getJwtToken();
   const apiName = 'yedselfsvcex';
@@ -38,6 +42,11 @@ let getDefaultKey = async (): Promise<KeyDefaultValues> => {
   };
 };
 
+/**
+ * 
+ * @param Properties Used to submit the key and the type of action being performed 
+ * @returns A loading screen where the default key is being pulled in the background, and the form action set to create
+ */
 const KeyDefault: FunctionComponent<KeyDefaultProps> = ({
   submitKeyDefault,
   submitFormAction
@@ -45,12 +54,19 @@ const KeyDefault: FunctionComponent<KeyDefaultProps> = ({
   const { t } = useTranslation();
   const history = useHistory();
 
+  /**
+   * 
+   * @param values Values of the Key that has been defaulted by the user 
+   */
   const submitKey = (values: KeyDefaultValues) => {
     submitKeyDefault(values);
     submitFormAction('create');
     history.push(AppRoutePath.Order + OrderRoutePath.Delivery);
   };
 
+  /**
+   * Will call to the Lambda API to get the default key that has been configured by the organization
+   */
   getDefaultKey().then((res) => {
     submitKey(res);
   });

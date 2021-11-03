@@ -21,6 +21,11 @@ import { CardContent, CardMedia } from '@mui/material';
 import { API, Auth } from 'aws-amplify';
 import invConfig from '../../../../inv-config';
 
+/**
+ * Function Component to render the address information the user has entered for their order
+ * @param address The address values that will be displayed on the confirmation page 
+ * @returns The component to render a users address
+ */
 const AddressDisplay: FunctionComponent<{ address: AddressFormValues }> = ({
   address,
 }) => {
@@ -50,6 +55,11 @@ const AddressDisplay: FunctionComponent<{ address: AddressFormValues }> = ({
   );
 };
 
+/**
+ * Used to render information for the key selected by the user
+ * @param keyDefault The inventory item the user has selected 
+ * @returns The component to render a users "cart" containing their selected keys
+ */
 const KeyDisplay: FunctionComponent<{ keyDefault: KeyDefaultValues }> = ({
   keyDefault,
 }) => {
@@ -75,10 +85,20 @@ const KeyDisplay: FunctionComponent<{ keyDefault: KeyDefaultValues }> = ({
   );
 };
 
+/**
+ * Calls to the invConfig file to pull out the image location for an inventory item
+ * @param prodName Product Name, the name of the product as found in the GET /products API
+ * @returns a string containing the image location to reference 
+ */
 const keyImageLocation = (prodName: string): string => {
   return invConfig[prodName].imageLocation;
 };
 
+/**
+ * Calls to the invConfig file to pull out the custom description for an inventory item
+ * @param prodName Product Name, the name of the product as found in the GET /products API
+ * @returns a string containing the custom description to reference 
+ */
 const keyCustomDescription = (prodName: string): string => {
   return invConfig[prodName].customDescription;
 };
@@ -91,13 +111,22 @@ export const Confirmation: FunctionComponent<ConfirmationProps> = ({
 }) => {
   const { t } = useTranslation();
   const history = useHistory();
+
+  //Flag to determine if the loading bar should appear to prevent multiple submit presses
   const [called, setCalled] = useState(false);
+
+  //Flag to determine if the user has selected a key, if not then the component will redirect the user to Key Default to select a key
   const [hasKey] = useState(keyDefault.product_id !== 0);
   
   if (!hasKey) {
     history.push(AppRoutePath.Order + OrderRoutePath.KeyDefault);
   }
 
+  /**
+   * Function to submit the order to the YED API using POST /shipments_exact
+   * The call is made using the Amplify API library - https://docs.amplify.aws/lib/restapi/getting-started/q/platform/js/#aws-regional-endpoints
+   * Method will not return, but will redirect the user to the order history stage of the form
+   */
   const submitOrder = async () => {
     setCalled(true);
     const postBody = {
@@ -140,6 +169,11 @@ export const Confirmation: FunctionComponent<ConfirmationProps> = ({
     history.push(AppRoutePath.Order + OrderRoutePath.OrderHistory);
   };
 
+  /**
+   * Function to submit the order to the YED API using PUT /shipments_exact/{orderID}
+   * The call is made using the Amplify API library - https://docs.amplify.aws/lib/restapi/getting-started/q/platform/js/#aws-regional-endpoints
+   * Method will not return, but will redirect the user to the order history stage of the form
+   */
   const editOrder = async () => {
     setCalled(true);
     const postBody = {
@@ -182,6 +216,9 @@ export const Confirmation: FunctionComponent<ConfirmationProps> = ({
     history.push(AppRoutePath.Order + OrderRoutePath.OrderHistory);
   };
 
+  /**
+   * Will redirect a user back to the Delivery/Address form to change their address - No variables are altered in this state
+   */
   const editAddress = () => {
     history.push(AppRoutePath.Order + OrderRoutePath.Delivery);
   };

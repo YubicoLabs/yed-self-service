@@ -20,6 +20,10 @@ import Alert from '@mui/material/Alert';
 import invConfig from '../../../../inv-config';
 import { CircularProgress } from '@material-ui/core';
 
+/**
+ * Calls to the Lambda API, which gathers all of the orders that belong to a specific user - User is determined by the JWT token that is sent by the users session
+ * @returns An array of shipments belonging to the user
+ */
 const getOrders = async () => {
   const token = (await Auth.currentSession()).getIdToken().getJwtToken();
   const apiName = 'yedselfsvcex';
@@ -36,19 +40,40 @@ const getOrders = async () => {
   return response.data;
 };
 
+/**
+ * Calls to the invConfig file to pull out the image location for an inventory item
+ * @param prodName Product Name, the name of the product as found in the GET /products API
+ * @returns a string containing the image location to reference 
+ */
 const keyImageLocation = (prodName: string): string => {
   return invConfig[prodName].imageLocation;
 };
 
+/**
+ * Calls to the invConfig file to pull out the custom description for an inventory item
+ * @param prodName Product Name, the name of the product as found in the GET /products API
+ * @returns a string containing the custom description to reference 
+ */
 const keyCustomDescription = (prodName: string): string => {
   return invConfig[prodName].customDescription;
 };
 
+/**
+ * Helper function to format the date in a readable form when displaying on the web page - The YED API returns a long form date
+ * @param dateTime string correlating to the date time returned by the YED API 
+ * @returns formatted date
+ */
 const formatDate = (dateTime: string): string => {
   const toFormat = new Date(dateTime);
   return toFormat.toLocaleDateString();
 };
 
+/**
+ * Renders the information for a specific order
+ * @param orderDetails Fields from the YED API about this specific order - Equivalent to calling GET /shipments_exact/{id} 
+ * @param refreshList Function defined in the higher level component used to refresh the list
+ * @returns Component to render the Order information
+ */
 const OrderCard: FunctionComponent<{
   orderDetails: any;
   refreshList: any;
@@ -58,6 +83,9 @@ const OrderCard: FunctionComponent<{
 
   const history = useHistory();
 
+  /**
+   * Handles the case of an edit button is clicked, will redirect the user to the delivery page, with the information needed to default the order information
+   */
   const handleEdit = () => {
     history.push(
       AppRoutePath.Order + OrderRoutePath.Delivery + `/edit/${orderID}`
@@ -163,21 +191,12 @@ const OrderCard: FunctionComponent<{
     </Card>
   );
 };
-const deleteShipment = async (shipmentId: string) => {
-  const token = (await Auth.currentSession()).getIdToken().getJwtToken();
-  const apiName = 'yedselfsvcex';
-  const path = `/order/${shipmentId}`;
-  const myInit = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    response: true,
-    queryStringParameters: {},
-  };
 
-  await API.del(apiName, path, myInit);
-};
-
+/**
+ * Renders the information for the address of a specific order (done to break up parts of the component)
+ * @param orderDetails Fields from the YED API about this specific order - Equivalent to calling GET /shipments_exact/{id} 
+ * @returns Component to render the Address Order information
+ */
 const AddressDisplay: FunctionComponent<{ orderDetails: any }> = ({
   orderDetails,
 }) => {
@@ -199,6 +218,12 @@ const AddressDisplay: FunctionComponent<{ orderDetails: any }> = ({
   );
 };
 
+/**
+ * Used to render and define the HTML required to pop up a modal for the delete function on order items (where applicable)
+ * @param orderDetails Fields from the YED API about this specific order - Equivalent to calling GET /shipments_exact/{id} 
+ * @param refreshList Used to refresh the list after a deletion occurs
+ * @returns Component to render the Address Order information
+ */
 const DeleteModal: FunctionComponent<{
   orderDetails: any;
   refreshList: any;
@@ -270,6 +295,27 @@ const DeleteModal: FunctionComponent<{
   );
 };
 
+/**
+ * Function to call to the YED API to delete the shipment based on the  ID
+ * @param shipmentId ID of the shipment to delete
+ */
+const deleteShipment = async (shipmentId: string) => {
+  const token = (await Auth.currentSession()).getIdToken().getJwtToken();
+  const apiName = 'yedselfsvcex';
+  const path = `/order/${shipmentId}`;
+  const myInit = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    response: true,
+    queryStringParameters: {},
+  };
+
+  await API.del(apiName, path, myInit);
+};
+
+
+
 const OrderHistory: FunctionComponent = () => {
   const { t } = useTranslation();
   const [orderList, setOrderList] = useState([]);
@@ -282,6 +328,7 @@ const OrderHistory: FunctionComponent = () => {
     }
     const orders = await getOrders();
 
+    //Sorts the orders by date, and reverses it to put the newest orders at the top
     const orders_sorted = orders.sort(function(a: any, b: any) {
       return Date.parse(a.shipment_request_date) - Date.parse(b.shipment_request_date);
     });
