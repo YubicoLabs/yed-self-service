@@ -37,7 +37,7 @@
   <p align="center">
     Create a web portal driven by the YubiEnterprise API that allows your customers to order from your organization's inventory
     <br />
-    <a href="https://github.com/github_username/repo_name"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/YubicoLabs/yed-self-service#about-the-lambda-logic"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     ·
@@ -386,7 +386,7 @@ Distributed under the Apache-2.0 License. See `LICENSE` for more information.
 <!-- CONTACT -->
 ## Contact
 
-[Yubico Developer Program Name](https://developers.yubico.com/)
+[Yubico Developer Program](https://developers.yubico.com/)
 
 Project Link: [https://github.com/YubicoLabs/yed-self-service](https://github.com/YubicoLabs/yed-self-service)
 
