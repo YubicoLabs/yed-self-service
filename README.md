@@ -69,7 +69,6 @@
     <li><a href="#manually-configure-your-amplify-environment">Manually Configure your Amplify environment</a></li>
     <li><a href="#about-the-lambda-logic">About the Lambda Logic</a></li>
     <li><a href="#about-the-react-app">About the React App</a></li>
-    <li><a href="#usage">Usage</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -153,9 +152,7 @@ To get a local copy up and running follow these simple example steps.
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ## Automatically Configure your Amplify Environment
-**Will put button here later**
-
-If you wish to manually configure your Amplify environment, please proceed to the next section
+[![amplifybutton](https://oneclick.amplifyapp.com/button.svg)](https://console.aws.amazon.com/amplify/home#/deploy?repo=https://github.com/YubicoLabs/yed-self-service)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -358,16 +355,6 @@ In the code you may see references to inv-config. This was created to help your 
 You might notice that the rendering components don't contain any actual words, but instead are filled with items that look like {t["something"]}. This is used to act as an easy way to consistently configure different languages in your application. The English values can be found in **public > i18n > en-US.json**
 
 <p align="right">(<a href="#top">back to top</a>)</p>
-
-<!-- USAGE EXAMPLES -->
-## Usage
-
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
 
 <!-- CONTRIBUTING -->
 ## Contributing
