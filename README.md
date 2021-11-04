@@ -55,23 +55,24 @@
   <ol>
     <li>
       <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
+    </li>
+    <li>
+      <a href="#reference-architecture">Reference Architecture</a>
+    </li>
+    <li>
+      <a href="#built-with">Built With</a>
     </li>
     <li>
       <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
     </li>
+    <li><a href="#automatically-configure-your-amplify-environment">Automatically Configure your Amplify Environment</a></li>
+    <li><a href="#manually-configure-your-amplify-environment">Manually Configure your Amplify environment</a></li>
+    <li><a href="#about-the-lambda-logic">About the Lambda Logic</a></li>
+    <li><a href="#about-the-react-app">About the React App</a></li>
     <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
 </details>
 
@@ -93,6 +94,8 @@ In this project you will
 
 **Disclaimer** - This project is not meant to act as a production ready solution for **all** organizations. It is meant to demonstrate a reference architecture for how the YED API can be integrated into a custom application.
 
+<p align="right">(<a href="#top">back to top</a>)</p>
+
 ## Reference Architecture
 
 ![Reference Architecture](/docs/images/arch-diagram.png)
@@ -106,7 +109,7 @@ Here is a description of each of the components above, and why they are included
 6. **YED API** - Your organizations instance of YED
 7. **Email / SMS Notification** - Not included in this example, but this code should be extended to send notifications to users based on their shipments status
 
-### Built With
+## Built With
 
 * [YubiEnterprise Delivery](https://console.yubico.com/help/introduction.html)
 * [YubiEnterprise API](https://console.yubico.com/apidocs/#operation/CreateShipmentExact)
@@ -154,13 +157,13 @@ To get a local copy up and running follow these simple example steps.
 
 If you wish to manually configure your Amplify environment, please proceed to the next section
 
+<p align="right">(<a href="#top">back to top</a>)</p>
+
 ## Manually Configure your Amplify environment
 Amplify provides a set of tools that will allow us to quickly provision cloud resources in AWS to begin quickly building and deploying our application. For this tutorial we will create the following Amplify Resources -
 * API - Using API Gateway and Lambda
 * Authentication - Using Cognito
 * Storage - Using DynamoDB
-
-<p align="right">(<a href="#top">back to top</a>)</p>
 
 ### Initialize your Amplify environment
 
@@ -169,10 +172,10 @@ Amplify provides a set of tools that will allow us to quickly provision cloud re
     amplify init
     ```
 2. Use the following values to initialize your Amplify environment
-* Enter a name for the project (react-amplified): yed-example
-* Enter a name for the environment (dev): dev
-* Choose the type of app that you're building (javascript): react
-* Use default values for the other configurations
+    * Enter a name for the project (react-amplified): yed-example
+    * Enter a name for the environment (dev): dev
+    * Choose the type of app that you're building (javascript): react
+    * Use default values for the other configurations
 
 ### Initialize Cognito for authentication
 **Note:** The default configurations created here are not recommended for a production environment. It is expected that you will replace this module with the identity provider used by your organization
@@ -197,16 +200,16 @@ Luckily Amplify allows you to configure your API in one step. To keep this examp
     amplify add api
     ```
 2. Use the following values to initialize your API
-* Service: REST
-* Friendly Name for the label: yedselfsvcex
-* Path: /yed
-* Lambda source: Create a new Lambda function
-* AWS Lambda function name: yedselfsvcex
-* Runtime: NodeJS
-* Function template: Hello World
-* Do you want to configure advanced settings: No
-    * We will edit the Secret and Environment Variables in the following step
-* Do you want to edit the local code now: No
+    * Service: REST
+    * Friendly Name for the label: yedselfsvcex
+    * Path: /yed
+    * Lambda source: Create a new Lambda function
+    * AWS Lambda function name: yedselfsvcex
+    * Runtime: NodeJS
+    * Function template: Hello World
+    * Do you want to configure advanced settings: No
+        * We will edit the Secret and Environment Variables in the following step
+    * Do you want to edit the local code now: No
 
 #### Create the Lambda environment and secret variables
 Now we will add the secret and environment variables for your lambda. The secret will be used for your YED API key, and the environment variable will be used for YED API URL
@@ -218,12 +221,12 @@ Now we will add the secret and environment variables for your lambda. The secret
 3. Choose Environment variables configuration
 4. Choose Add new environment variables
 5. Create the variable with the following details
-* Name: YED_API_URL
-* Value: {your YED API URL}
+    * Name: YED_API_URL
+    * Value: {your YED API URL}
 3. Repeat this step for another environment variable
-* Name: DEFAULT_PRODUCT_ID
-* Value: 5
-* This second variable is used to create a default product ID for this example, you can remove this from the code, or prevent the front end from calling the /inventorydefault URL, and instead allow the user to select their own key
+    * Name: DEFAULT_PRODUCT_ID
+    * Value: 5
+    * This second variable is used to create a default product ID for this example, you can remove this from the code, or prevent the front end from calling the /inventorydefault URL, and instead allow the user to select their own key
 6. Now to create your secret variable for your YED API Key - This one is not set as an env variable, but instead within AWS Secret manager
 7. Run the following command
     ```sh
@@ -233,8 +236,8 @@ Now we will add the secret and environment variables for your lambda. The secret
 3. Choose Environment variables configuration
 4. Choose Secret values configuration
 5. Create the variable with the following details
-* Name: YED_API_TOKEN
-* Value: {your YED API Secret}
+    * Name: YED_API_TOKEN
+    * Value: {your YED API Secret}
 
 #### Configure the API paths
 We will now configure the paths needed by the API. These various paths are defined in the Lambda code, so ensure that all the paths required are created.
@@ -247,17 +250,17 @@ We will now configure the paths needed by the API. These various paths are defin
 3. REST API: yedselfsvcex
 4. Add another path
 5. Create a path with the following values
-* Path: /address
-* Lambda source: Use a Lambda function already added in the current Amplify project
-* Lambda source: yedselfsvcex
-* Restrict API access Yes
-* Who should have access: Authenticated users only
-* What kind of access: Create, Read, Update, Delete
+    * Path: /address
+    * Lambda source: Use a Lambda function already added in the current Amplify project
+    * Lambda source: yedselfsvcex
+    * Restrict API access Yes
+    * Who should have access: Authenticated users only
+    * What kind of access: Create, Read, Update, Delete
 6. Repeat the step above for the following paths (all should be restricted to authenticated users)
-* /inventory
-* /order/{isbn}
-* /defaultinventory
-* /orders
+    * /inventory
+    * /order/{isbn}
+    * /defaultinventory
+    * /orders
 
 Your Lambda and API has now been created. Your new Lambda environment will not have the source code that came with this project so replace the file in your directory **amplify > backend ? function > yedselfsvcex > src > index.js** with the code found in [this file](https://github.com/YubicoLabs/yed-self-service/blob/master/amplify/backend/function/yedselfsvcex/src/index.js)
 
@@ -285,15 +288,15 @@ Complete the following to create your storage resource:
     amplify add storage
     ```
 2. Use the following values to initialize your resource:
-* Storage service: NoSQL Database
-* Project Name: Yedselfsvcdb
-* Ensure you create **two** columns
-    * user_sub
-    * shipment_id
-    * **Caution** you do not change these column names, otherwise you will need to retry, or modify the Lambda source code
-* Partition Key: shipment_id
-* Select No for the remainder of the prompts
-* Amplify will ask if you wish to edit your code, select **no**
+    * Storage service: NoSQL Database
+    * Project Name: Yedselfsvcdb
+    * Ensure you create **two** columns
+        * user_sub
+        * shipment_id
+        * **Caution** you do not change these column names, otherwise you will need to retry, or modify the Lambda source code
+    * Partition Key: shipment_id
+    * Select No for the remainder of the prompts
+    * Amplify will ask if you wish to edit your code, select **no**
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -325,6 +328,10 @@ As noted about it acts as the "main" of the application. It has four primary res
 Every method essentially calls to the YED API in the same manner - The call is made and the data from the response is sent directly to the client.
 
 There are some checks on top of some of the calls to check if the user has permission to CRUD to the shipment. 
+
+There is a 1:1 relationship between the operations + paths defined in exports,handler, and a method that calls to YED. There are a few helper methods if something needs to be done with the storage resource.
+
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 ## About the React App
 There are a few things that should be noted about the React App itself - While this tutorial is more focused on the big picture architecture, it is important to know how the front end is interacting with the backend to fully understand how YED is being used.
