@@ -95,7 +95,7 @@ In this project you will
 
 ## Reference Architecture
 
-[![Reference Architecture][/docs/images/arch-diagram.png]]()
+![Reference Architecture](/docs/images/arch-diagram.png)
 
 Here is a description of each of the components above, and why they are included in this project
 1. YubiKey Ordering Web App - The client for your application which will allow your end users to create, manage, and track their personal shipment
