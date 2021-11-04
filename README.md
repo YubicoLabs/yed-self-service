@@ -98,13 +98,13 @@ In this project you will
 ![Reference Architecture](/docs/images/arch-diagram.png)
 
 Here is a description of each of the components above, and why they are included in this project
-1. YubiKey Ordering Web App - The client for your application which will allow your end users to create, manage, and track their personal shipment
-2. OpenID Connect Identity Provider - Used to establish the identity if your user. In this project it is currently used to pull the JWT token to authorize the user, and track their shipments anonymously in the database. It is expected that you will eventually use your organizations IdP - which you can extend to automatically pull user claims (email, name, address)
-3. API Gateway - Manages your API that your client will use to make calls to your backend service, which will relay orders to YED
-4. Order Management Service - This is the core of your backend logic - This is where you will configure how your app will handle user requests and send them to YED. It also provides a way to abstract away the YED API secret from the client
-5. Order Database - Used to track the relationship between a user and their shipment IDs
-6. YED API - Your organizations instance of YED
-7. Email / SMS Notification - Not included in this example, but this code should be extended to send notifications to users based on their shipments status
+1. **YubiKey Ordering Web App** - The client for your application which will allow your end users to create, manage, and track their personal shipment
+2. **OpenID Connect Identity Provider** - Used to establish the identity of your user. In this project it is currently used to pull the JWT token to authorize the user, and track their shipments anonymously in the database. It is expected that you will eventually use your organizations IdP - which you can extend to automatically pull user claims (email, name, address)
+3. **API Gateway** - Manages your API that your client will use to make calls to your backend service, which will relay orders to YED
+4. **Order Management Service** - This is the core of your backend logic - This is where you will configure how your app will handle user requests and send them to YED. It also provides a way to abstract away the YED API secret from the client
+5. **Order Database** - Used to track the relationship between a user and their shipment IDs
+6. **YED API** - Your organizations instance of YED
+7. **Email / SMS Notification** - Not included in this example, but this code should be extended to send notifications to users based on their shipments status
 
 ### Built With
 
@@ -114,10 +114,9 @@ Here is a description of each of the components above, and why they are included
 * [Material UI](https://mui.com/)
 * [AWS Amplify](https://aws.amazon.com/amplify/)
 * [Formik](https://formik.org/)
+    * [This tutorial](https://javascript.plainenglish.io/step-to-step-guide-on-building-a-checkout-form-in-react-5f28af1c1fdf) and [this repository](https://github.com/xiongemi/react-checkout-form) are good primers for how the Form and Order Flow were created for this site
 
 <p align="right">(<a href="#top">back to top</a>)</p>
-
-
 
 <!-- GETTING STARTED -->
 ## Getting Started
@@ -298,6 +297,61 @@ Complete the following to create your storage resource:
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
+## About the Lambda Logic
+The Lambda resource is where your backend logic will reside - This is important as this is where your application will be calling directly to the YED API to create, manage, and get orders (and perform other operations like address validate).
+
+The current application does not have a corresponding endpoint to every operation in YED. If additional functionality is required, use the code as a template for calling the other YED endpoints
+
+**Where is my lambada logic?** - You don't need to go into the Lambda resource directly to edit your lambda, it can be done directly from your project. The Lambda index can be found in the directory **amplify > backend > function > yedselfsvcex > src > index.js**
+
+### On using Env and Secret Variables
+At the top of the file there are some definitions that are generated based on configurations you have made using the Amplify CLI. If your code isn't working for some reason, make sure that you followed the same naming convention that was used.
+
+### How is the code structured
+There are three tiers to the entire example 
+
+* Definition of variables
+* Logic to call to YED or to Storage
+* exports.handler which acts as the "main" whenever this function is called
+
+### About exports.handler
+As noted about it acts as the "main" of the application. It has four primary responsibilities
+* Gets the Secret Variables from the AWS SSM
+* Takes the JWT token passed by the user, and gets the user_sub. This will be used to identify the user
+* Switch/Case that reacts to the particular operation + path called by the user
+* Returns the response to the client
+
+### About the YED Calls
+Every method essentially calls to the YED API in the same manner - The call is made and the data from the response is sent directly to the client.
+
+There are some checks on top of some of the calls to check if the user has permission to CRUD to the shipment. 
+
+## About the React App
+There are a few things that should be noted about the React App itself - While this tutorial is more focused on the big picture architecture, it is important to know how the front end is interacting with the backend to fully understand how YED is being used.
+
+### Src > Pages > Order
+This is where you will find the majority of the logic needed for this application
+* Components - If you are familiar with React you will expect to find the various high level pages in this area, the components will be broken down in more detail shortly
+* Routes - These are the routes that are **specific** to the order form. This project has one major route schema in the high level app (Order route). Within this folders route folder you will find the definitions for how the routes are configured for each form step
+* Store - This will be extremely to understand, so be sure you peek under the hood. This is the area that will persist data through a users experience. This allows a user to jump between form stages, as well as being used by the app to determine **what** the user is trying to do in the form (create or edit)
+
+### Src > Pages > Components
+In this section we will walk through what each component is responsible for, and some details to note - For further detail please go into the component and read the comment details
+* **address** - This is the form component that allows the user to input their shipping information. This is primarily built using Formik. There are some items in here that allow you to control the form schema such as field lengths. This component is not used directly by the flow, instead it is built into the **delivery** component
+* **confirmation** - This is the page where the user gets an overview of their order before they submit it. There is logic in this page that switches the context between a user creating a new order, or editing an existing order
+* **delivery** - This is where the user performs two actions: Sets their shipping information, and ensures that their shipping address is valid. Once a user fills out the form they submit the form, but instead of routing to the next page, the form calls to the YED API's /validate-address endpoint to ensure that Yubico can deliver to the address. If the address is not valid the shipment errors are returned back to the user to make the corrections, they will need to validate the address again before continuing.
+* **key-default** - This page is just a loading screen that calls to the backend using the /defaultinventory logic. This essentially preselects a key for your user, and moves them to the Delivery Component. Every component has a check, if a key has not been set, the user will be redirected to this component for a key to be chosen for them. You can extend this component to act as a catalog for your user to select the key they want
+* **order-history** - This shows all of a users personal orders. If a order is below shipping state 10, then they will be able to edit and delete the order. Otherwise the buttons will disappear. When tracking information becomes available it will be displayed to the user
+* **order-stepper** - This controls the form stepper you see at the top of the flow. It highlights what stage the user is in. Links were added to the delivery and order history step to allow a user to quickly create a new order, or see their previous order
+
+### Inventory Config
+In the code you may see references to inv-config. This was created to help your organization easily manage details that you want to use for your catalog. You can set your own custom image to be displayed, and your own custom description to guide your users into selecting the correct key. For this example there is only information about the YubiKey 5Ci, but you can follow the same schema for other keys (this is based on your requirements)
+
+### Translations
+You might notice that the rendering components don't contain any actual words, but instead are filled with items that look like {t["something"]}. This is used to act as an easy way to consistently configure different languages in your application. The English values can be found in **public > i18n > en-US.json**
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
 <!-- USAGE EXAMPLES -->
 ## Usage
 
@@ -306,21 +360,6 @@ Use this space to show useful examples of how a project can be used. Additional 
 _For more examples, please refer to the [Documentation](https://example.com)_
 
 <p align="right">(<a href="#top">back to top</a>)</p>
-
-
-
-<!-- ROADMAP -->
-## Roadmap
-
-- [] Feature 1
-- [] Feature 2
-- [] Feature 3
-    - [] Nested Feature
-
-See the [open issues](https://github.com/github_username/repo_name/issues) for a full list of proposed features (and known issues).
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
 
 
 <!-- CONTRIBUTING -->
@@ -344,7 +383,7 @@ Don't forget to give the project a star! Thanks again!
 <!-- LICENSE -->
 ## License
 
-Distributed under the MIT License. See `LICENSE.txt` for more information.
+Distributed under the Apache-2.0 License. See `LICENSE` for more information.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -353,23 +392,11 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email@email_client.com
+[Yubico Developer Program Name](https://developers.yubico.com/)
 
-Project Link: [https://github.com/github_username/repo_name](https://github.com/github_username/repo_name)
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
-
-<!-- ACKNOWLEDGMENTS -->
-## Acknowledgments
-
-* []()
-* []()
-* []()
+Project Link: [https://github.com/YubicoLabs/yed-self-service](https://github.com/YubicoLabs/yed-self-service)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
-
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
