@@ -29,7 +29,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/github_username/repo_name">
-    <img src="https://assets.brandfolder.com/q2tsde-8kenzk-4cg1pz/v/8222261/original/Yubico%20Logo%20Big%20(PNG).png" alt="Logo" width="80" height="80">
+    <img src="https://assets.brandfolder.com/q2tsde-8kenzk-4cg1pz/v/8222261/original/Yubico%20Logo%20Big%20(PNG).png" alt="Logo" width="363" height="100">
   </a>
 
 <h3 align="center">YED Self Service Portal</h3>
@@ -80,8 +80,6 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
-
 YubiEnterprise Delivery is a cloud-based service that enables streamlined distribution of YubiKeys to end-users’ offices or residential addresses, both domestic and international.
 
 While YubiEnterprise Delivery (YED) can be driven entirely through the pre-built console, it comes with an API that allows for the ability to extend the functionality. This will allow your organization's developers to integrate the API into custom solutions that further meet the requirements of your business.
@@ -95,9 +93,18 @@ In this project you will
 
 **Disclaimer** - This project is not meant to act as a production ready solution for **all** organizations. It is meant to demonstrate a reference architecture for how the YED API can be integrated into a custom application.
 
-<p align="right">(<a href="#top">back to top</a>)</p>
+## Reference Architecture
 
+[![Reference Architecture][/docs/images/arch-diagram.png]]()
 
+Here is a description of each of the components above, and why they are included in this project
+1. YubiKey Ordering Web App - The client for your application which will allow your end users to create, manage, and track their personal shipment
+2. OpenID Connect Identity Provider - Used to establish the identity if your user. In this project it is currently used to pull the JWT token to authorize the user, and track their shipments anonymously in the database. It is expected that you will eventually use your organizations IdP - which you can extend to automatically pull user claims (email, name, address)
+3. API Gateway - Manages your API that your client will use to make calls to your backend service, which will relay orders to YED
+4. Order Management Service - This is the core of your backend logic - This is where you will configure how your app will handle user requests and send them to YED. It also provides a way to abstract away the YED API secret from the client
+5. Order Database - Used to track the relationship between a user and their shipment IDs
+6. YED API - Your organizations instance of YED
+7. Email / SMS Notification - Not included in this example, but this code should be extended to send notifications to users based on their shipments status
 
 ### Built With
 
@@ -148,13 +155,15 @@ To get a local copy up and running follow these simple example steps.
 
 If you wish to manually configure your Amplify environment, please proceed to the next section
 
-## Manually Configure your Amplify Environment
+## Manually Configure your Amplify environment
 Amplify provides a set of tools that will allow us to quickly provision cloud resources in AWS to begin quickly building and deploying our application. For this tutorial we will create the following Amplify Resources -
 * API - Using API Gateway and Lambda
 * Authentication - Using Cognito
 * Storage - Using DynamoDB
 
-### Initialize your Amplify Environment
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+### Initialize your Amplify environment
 
 1. Open the terminal in the root of your project directory and run the following command
     ```sh
@@ -180,9 +189,10 @@ Amplify provides a set of tools that will allow us to quickly provision cloud re
     amplify console
     ```
 
-### Initialize your API and Lambda Function
+### Initialize your API and Lambda function
 Luckily Amplify allows you to configure your API in one step. To keep this example simple we are only using one API Gateway resource, and one Lambada function for all operations, though you can split this in a variety of different ways based on your requirements.
 
+#### Create the API and Lambda resource
 1. Run the following command
     ```sh
     amplify add api
@@ -199,6 +209,7 @@ Luckily Amplify allows you to configure your API in one step. To keep this examp
     * We will edit the Secret and Environment Variables in the following step
 * Do you want to edit the local code now: No
 
+#### Create the Lambda environment and secret variables
 Now we will add the secret and environment variables for your lambda. The secret will be used for your YED API key, and the environment variable will be used for YED API URL
 1. Run the following command
     ```sh
@@ -226,6 +237,7 @@ Now we will add the secret and environment variables for your lambda. The secret
 * Name: YED_API_TOKEN
 * Value: {your YED API Secret}
 
+#### Configure the API paths
 We will now configure the paths needed by the API. These various paths are defined in the Lambda code, so ensure that all the paths required are created.
 
 1. Run the following command
@@ -284,7 +296,7 @@ Complete the following to create your storage resource:
 * Select No for the remainder of the prompts
 * Amplify will ask if you wish to edit your code, select **no**
 
-
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- USAGE EXAMPLES -->
 ## Usage
