@@ -262,9 +262,9 @@ We will now configure the paths needed by the API. These various paths are defin
 Your Lambda and API has now been created. Your new Lambda environment will not have the source code that came with this project so replace the file in your directory **amplify > backend ? function > yedselfsvcex > src > index.js** with the code found in [this file](https://github.com/YubicoLabs/yed-self-service/blob/master/amplify/backend/function/yedselfsvcex/src/index.js)
 
 Once completed run
-    ```sh
-    amplify publish
-    ```
+```sh
+amplify publish
+```
 
 ### Initialize your data store
 In this section you will use Amplify to create persistent storage for your application using DynamoDB
