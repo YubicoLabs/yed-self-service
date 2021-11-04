@@ -29,7 +29,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/github_username/repo_name">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+    <img src="https://assets.brandfolder.com/q2tsde-8kenzk-4cg1pz/v/8222261/original/Yubico%20Logo%20Big%20(PNG).png" alt="Logo" width="80" height="80">
   </a>
 
 <h3 align="center">YED Self Service Portal</h3>
@@ -132,12 +132,11 @@ To get a local copy up and running follow these simple example steps.
 
 ### Installation
 
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
+1. Clone the repo
    ```sh
    git clone git@github.com:YubicoLabs/yed-self-service.git
    ```
-3. Install NPM packages
+2. Install NPM packages
    ```sh
    npm install
    ```
@@ -179,6 +178,81 @@ Amplify provides a set of tools that will allow us to quickly provision cloud re
 * To view your Cognito service at a later time please run
     ```sh
     amplify console
+    ```
+
+### Initialize your API and Lambda Function
+Luckily Amplify allows you to configure your API in one step. To keep this example simple we are only using one API Gateway resource, and one Lambada function for all operations, though you can split this in a variety of different ways based on your requirements.
+
+1. Run the following command
+    ```sh
+    amplify add api
+    ```
+2. Use the following values to initialize your API
+* Service: REST
+* Friendly Name for the label: yedselfsvcex
+* Path: /yed
+* Lambda source: Create a new Lambda function
+* AWS Lambda function name: yedselfsvcex
+* Runtime: NodeJS
+* Function template: Hello World
+* Do you want to configure advanced settings: No
+    * We will edit the Secret and Environment Variables in the following step
+* Do you want to edit the local code now: No
+
+Now we will add the secret and environment variables for your lambda. The secret will be used for your YED API key, and the environment variable will be used for YED API URL
+1. Run the following command
+    ```sh
+    amplify update function
+    ```
+2. Select the Lambda to update: yedselfsvcex
+3. Choose Environment variables configuration
+4. Choose Add new environment variables
+5. Create the variable with the following details
+* Name: YED_API_URL
+* Value: {your YED API URL}
+3. Repeat this step for another environment variable
+* Name: DEFAULT_PRODUCT_ID
+* Value: 5
+* This second variable is used to create a default product ID for this example, you can remove this from the code, or prevent the front end from calling the /inventorydefault URL, and instead allow the user to select their own key
+6. Now to create your secret variable for your YED API Key - This one is not set as an env variable, but instead within AWS Secret manager
+7. Run the following command
+    ```sh
+    amplify update function
+    ```
+2. Select the Lambda to update: yedselfsvcex
+3. Choose Environment variables configuration
+4. Choose Secret values configuration
+5. Create the variable with the following details
+* Name: YED_API_TOKEN
+* Value: {your YED API Secret}
+
+We will now configure the paths needed by the API. These various paths are defined in the Lambda code, so ensure that all the paths required are created.
+
+1. Run the following command
+    ```sh
+    amplify update api
+    ```
+2. Service: REST
+3. REST API: yedselfsvcex
+4. Add another path
+5. Create a path with the following values
+* Path: /address
+* Lambda source: Use a Lambda function already added in the current Amplify project
+* Lambda source: yedselfsvcex
+* Restrict API access Yes
+* Who should have access: Authenticated users only
+* What kind of access: Create, Read, Update, Delete
+6. Repeat the step above for the following paths (all should be restricted to authenticated users)
+* /inventory
+* /order/{isbn}
+* /defaultinventory
+* /orders
+
+Your Lambda and API has now been created. Your new Lambda environment will not have the source code that came with this project so replace the file in your directory **amplify > backend ? function > yedselfsvcex > src > index.js** with the code found in [this file](https://github.com/YubicoLabs/yed-self-service/blob/master/amplify/backend/function/yedselfsvcex/src/index.js)
+
+Once completed run
+    ```sh
+    amplify publish
     ```
 
 ### Initialize your data store
@@ -297,5 +371,5 @@ Project Link: [https://github.com/github_username/repo_name](https://github.com/
 [issues-shield]: https://img.shields.io/github/issues/YubicoLabs/yed-self-service.svg?style=for-the-badge
 [issues-url]: https://github.com/YubicoLabs/yed-self-service/issues
 [license-shield]: https://img.shields.io/github/license/YubicoLabs/yed-self-service.svg?style=for-the-badge
-[license-url]: https://github.com/YubicoLabs/yed-self-service/blob/master/LICENSE.txt
+[license-url]: https://github.com/YubicoLabs/yed-self-service/blob/master/LICENSE
 [product-screenshot]: images/screenshot.png
