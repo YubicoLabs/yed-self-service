@@ -151,12 +151,53 @@ To get a local copy up and running follow these simple example steps.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-## Automatically Configure your Amplify Environment
+## Configuring Your Deployment Environment
+There are a few different options for creating your backend environment using Amplify. The following three sections outline the steps for creating your environment. Below is an overview of the options
+* Automatically Configure Your Amplify Environment - Single button offered by Amplify to build and configure your full environment
+* Using This Repository to Deploy Your Amplify Environment - **This is the recommended option** Clone this repo directly, and enter a few commands to deploy the environment using CloudFormation and to configure your application secret
+* Manually Deploy Your Amplify Environment - Step by step instructions on that guide you on each command needed to recreate the environment used in this repository
+
+## Automatically Configure Your Amplify Environment
 [![amplifybutton](https://oneclick.amplifyapp.com/button.svg)](https://console.aws.amazon.com/amplify/home#/deploy?repo=https://github.com/YubicoLabs/yed-self-service)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-## Manually Configure your Amplify environment
+## Using This Repository to Deploy Your Amplify Environment
+If the Amplify CLI detects an Amplify project in your directory, you only need to run a few commands to deploy and configure the environment. This option has less overhead than the Manual option.
+
+1. Ensure that you have cloned this repository - Open the terminal in the root of your project directory and run the following command
+    ```sh
+    amplify init
+    ```
+2. Use the following values to initialize your Amplify environment
+    * Do you want to use an existing environment? No
+    * Environment Name: yeddev
+    * Default Editor: Make your personal selection 
+    * Authentication Method: AWS Profile -> Select your personal profile
+    * **Give the terminal a moment to initialize the project, there are more prompts**
+    * Select Update Environment Values Now
+        * Select yedselfsvcex
+        * Select YED_API_URL
+        * Enter the URL from your YED instance
+        * Select DEFAULT_PRODUCT_ID
+        * Enter 5 (see the explanation below for /defaultinventory)
+    * Select Update Secret Values Now
+        * Select yedselfsvcex
+        * Update a secret
+        * YED_API_TOKEN
+        * Enter your API token from the YED console
+        * Select I'm done
+3. All that is left is to publish your Amplify Env using the following command
+    ```sh
+    amplify publish
+    ```
+4. Your website is ready to use, now run the following command
+    ```sh
+    npm start
+    ```
+
+
+## Manually Configure Your Amplify Environment
 Amplify provides a set of tools that will allow us to quickly provision cloud resources in AWS to begin quickly building and deploying our application. For this tutorial we will create the following Amplify Resources -
 * API - Using API Gateway and Lambda
 * Authentication - Using Cognito
@@ -355,6 +396,117 @@ In the code you may see references to inv-config. This was created to help your 
 You might notice that the rendering components don't contain any actual words, but instead are filled with items that look like {t["something"]}. This is used to act as an easy way to consistently configure different languages in your application. The English values can be found in **public > i18n > en-US.json**
 
 <p align="right">(<a href="#top">back to top</a>)</p>
+
+## FAQs and Common Issues
+
+### aws-exports.js file missing
+This will occur if you initiated your environment, but did not push/publish - Make sure you call 
+```sh
+amplify push
+
+or
+
+amplify publish
+```
+aws.exports.js should automatically be generated
+
+### My API calls to YED are failing
+There might be two reasons for this - You might not have configured your API secret, or your YED API URL is incorrect. See this section on [configuring your Environment and Secret Variables](#create-the-api-and-lambda-resource)
+
+### I made a change to my API using amplify update API and now everything is broken
+This is going to be your most annoying error, I would suggest not tweaking the API very often, but if it needs to be done then ensure you do the following steps
+
+First off, what is happening? Every time you make a local change to the API, an automatically created file is altered in **amplify > backend > api > yedselfsvcex > yedselfsvcex-cloudformation-template.json** 
+
+There are special configurations in this file that allow the resource to talk to Cognito, that seem to be overridden every time the API is updated. Luckily the template that we have provided will create the API resource, with the needed parameters to take in Auth values, but again these get overridden. 
+
+To troubleshoot ensure the following are in the file listed above
+
+```json
+"Parameters": {
+    ...
+    "AuthCognitoUserPoolId": {
+          "Type": "String",
+          "Description": "The id of an existing User Pool to connect. If this is changed, a user pool will not be created for you.",
+          "Default": "NONE"
+        }
+}
+...
+"Resources": {
+    "paths": {
+        "/your-new-path": {
+            ...
+            "parameters": [
+                ...,
+                {
+                    "name": "Authorization",
+                    "in": "header",
+                    "required": false,
+                    "type": "string"
+                } 
+            ],
+            "security": [
+                {
+                "Cognito": []
+                }
+            ],
+            ...
+        },
+        "/your-new-path/{proxy+}": {
+            ...
+            "parameters": [
+                ...,
+                {
+                    "name": "Authorization",
+                    "in": "header",
+                    "required": false,
+                    "type": "string"
+                } 
+            ],
+            "security": [
+                {
+                "Cognito": []
+                }
+            ],
+        },
+    },
+    "securityDefinitions": {
+        "Cognito": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header",
+            "x-amazon-apigateway-authtype": "cognito_user_pools",
+            "x-amazon-apigateway-authorizer": {
+            "type": "cognito_user_pools",
+            "providerARNs": [
+                {
+                "Fn::Join": [
+                    "",
+                    [
+                    "arn:aws:cognito-idp:",
+                    {
+                        "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                        "Ref": "AWS::AccountId"
+                    },
+                    ":userpool/",
+                    {
+                        "Ref": "AuthCognitoUserPoolId"
+                    }
+                    ]
+                ]
+                }
+            ]
+            }
+        }
+        },
+}
+```
+
+If you ever got lost, or want to revert back to before you made a breaking change then come back to this [file](https://github.com/YubicoLabs/yed-self-service/blob/master/amplify/backend/api/yedselfsvcex/yedselfsvcex-cloudformation-template.json), and replace it with your changes.
+
 
 <!-- CONTRIBUTING -->
 ## Contributing
