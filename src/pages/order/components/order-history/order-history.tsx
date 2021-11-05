@@ -258,7 +258,7 @@ const DeleteModal: FunctionComponent<{
           }}>
           <Stack spacing={2}>
             <Typography id='modal-modal-title' variant='h6' component='h2'>
-            {t('order-history.sure-delete')}
+            {t('order-history.sure-delete')} {orderDetails.shipment_id}
             </Typography>
             {loading && (
               <Box sx={{ display: 'flex', justifyContent: 'center' }} mt={2}>
@@ -357,20 +357,29 @@ const OrderHistory: FunctionComponent = () => {
             </Box>
           )}
           {!loading && (
-            <Box mt={2}>
-              {orderList.length > 0 && (
-                <Stack direction='column' spacing={2} divider={<Divider />}>
-                  {orderList.map(function (item: any, index) {
-                    return (
-                      <OrderCard
-                        key={index}
-                        orderDetails={item}
-                        refreshList={refreshList}></OrderCard>
-                    );
-                  })}
-                </Stack>
-              )}
+            <>
+              {orderList.length === 0 && (
+                <Box sx={{ display: 'flex', justifyContent: 'center' }} mt={2}>
+              <Typography variant='h5' component='legend' gutterBottom>
+            {t('order-history.no-order')}
+          </Typography>
             </Box>
+              )}
+              <Box mt={2}>
+                {orderList.length > 0 && (
+                  <Stack direction='column' spacing={2} divider={<Divider />}>
+                    {orderList.map(function (item: any, index) {
+                      return (
+                        <OrderCard
+                          key={index}
+                          orderDetails={item}
+                          refreshList={refreshList}></OrderCard>
+                      );
+                    })}
+                  </Stack>
+                )}
+              </Box>
+            </>
           )}
         </Container>
       </Box>

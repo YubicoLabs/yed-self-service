@@ -194,6 +194,11 @@ async function deleteOrder(orderID) {
   return res;
 }
 
+/**
+ * Gets all of the orders belonging to a specific user
+ * @param {string} userSub Identifier of the user pulled from the JWT token, used to determine shipments that belong to a user
+ * @returns A list of order belonging to the user
+ */
 async function getOrders(userSub) {
   const params = {
     TableName: TABLE_NAME,
@@ -215,10 +220,7 @@ async function getOrders(userSub) {
 
   const shipmentIds = dynamoRes.Items;
   if (shipmentIds.length === 0) {
-    return {
-      count: 0,
-      shipments: [],
-    };
+    return [];
   }
 
   const promises = shipmentIds.map(item => {
@@ -229,8 +231,8 @@ async function getOrders(userSub) {
     .then((response) => {
       return response.data;
     })
-    .catch(({ response }) => {
-      return response.data;
+    .catch(() => {
+      console.log("This order was not found");
     });
   });
   const value = Promise.all(promises).then((data) => {
@@ -238,21 +240,6 @@ async function getOrders(userSub) {
   });
 
   return value;
-}
-
-async function getAllOrders() {
-  const params = {
-    TableName: TABLE_NAME,
-  };
-
-  try {
-    const data = await docClient.scan(params).promise();
-    return {
-      data: data,
-    };
-  } catch (err) {
-    return err;
-  }
 }
 
 /**
@@ -336,14 +323,7 @@ exports.handler = async (event) => {
         body = await deleteOrder(deleteOrderID);
         break;
       case 'GET /orders':
-        //Will implement once we figure out our data storage decision
-        //The primary reason for this method is to retrieve all orders belonging to a user
         body = await getOrders(sub);
-        break;
-      case 'GET /allorders':
-        //Will implement once we figure out our data storage decision
-        //The primary reason for this method is to retrieve all orders belonging to a user
-        body = await getAllOrders();
         break;
       default:
         body = operation;

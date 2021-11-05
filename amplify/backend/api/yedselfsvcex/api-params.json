@@ -17,21 +17,6 @@
             "policyResourceName": "/inventory"
         },
         {
-            "name": "/authtest",
-            "lambdaFunction": "yedselfsvcex",
-            "privacy": {
-                "private": true,
-                "auth": [
-                    "/POST",
-                    "/GET",
-                    "/PUT",
-                    "/PATCH",
-                    "/DELETE"
-                ]
-            },
-            "policyResourceName": "/authtest"
-        },
-        {
             "name": "/order/{isbn}",
             "lambdaFunction": "yedselfsvcex",
             "privacy": {
@@ -49,14 +34,6 @@
                 ]
             },
             "policyResourceName": "/defaultinventory"
-        },
-        {
-            "name": "/allorders",
-            "lambdaFunction": "yedselfsvcex",
-            "privacy": {
-                "open": true
-            },
-            "policyResourceName": "/allorders"
         },
         {
             "name": "/orders",
@@ -93,6 +70,6 @@
             ]
         }
     ],
-    "uuid": "11cb5c30",
+    "uuid": "b959ed56",
     "authResourceName": "yedselfservicecs0e2e388e"
 }
