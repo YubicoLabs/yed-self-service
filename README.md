@@ -65,10 +65,10 @@
     <li>
       <a href="#getting-started">Getting Started</a>
     </li>
-    <li><a href="#automatically-configure-your-amplify-environment">Automatically Configure your Amplify Environment</a></li>
-    <li><a href="#manually-configure-your-amplify-environment">Manually Configure your Amplify environment</a></li>
+    <li><a href="#configuring-your-deployment-environment">Configuring Your Deployment Environment</a></li>
     <li><a href="#about-the-lambda-logic">About the Lambda Logic</a></li>
     <li><a href="#about-the-react-app">About the React App</a></li>
+    <li><a href="#faqs-and-common-issues">FAQs and Common Issues</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -129,7 +129,8 @@ To get a local copy up and running follow these simple example steps.
 ### Prerequisites
 
 * YubiEnterprise Delivery Instance
-    * For an API key contact your organization's Yubico Owner or your [Yubico sales contact](https://pages.yubico.com/contact))
+    * For an API key contact your organization's Yubico Owner or your [Yubico sales contact](https://pages.yubico.com/contact)
+    * Ensure you also have the API URL for your instance of YED
 * [AWS Account](https://aws.amazon.com/free/)
 * Install the AWS CLI v2
     * [Download link here](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html)
@@ -153,9 +154,11 @@ To get a local copy up and running follow these simple example steps.
 
 ## Configuring Your Deployment Environment
 There are a few different options for creating your backend environment using Amplify. The following three sections outline the steps for creating your environment. Below is an overview of the options
-* Automatically Configure Your Amplify Environment - Single button offered by Amplify to build and configure your full environment
-* Using This Repository to Deploy Your Amplify Environment - **This is the recommended option** Clone this repo directly, and enter a few commands to deploy the environment using CloudFormation and to configure your application secret
-* Manually Deploy Your Amplify Environment - Step by step instructions on that guide you on each command needed to recreate the environment used in this repository
+* [Automatically Configure Your Amplify Environment](#automatically-configure-your-amplify-environment) - Single button offered by Amplify to build and configure your full environment
+* [Using This Repository to Deploy Your Amplify Environment](#using-this-repository-to-deploy-your-amplify-environment) - **This is the recommended option** - Clone this repo directly, and enter a few commands to deploy the environment using CloudFormation and to configure your application secret
+* [Manually Deploy Your Amplify Environment](#manually-configure-your-amplify-environment) - Step by step instructions on that guide you on each command needed to recreate the environment used in this repository
+
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 ## Automatically Configure Your Amplify Environment
 [![amplifybutton](https://oneclick.amplifyapp.com/button.svg)](https://console.aws.amazon.com/amplify/home#/deploy?repo=https://github.com/YubicoLabs/yed-self-service)
@@ -195,7 +198,7 @@ If the Amplify CLI detects an Amplify project in your directory, you only need t
     ```sh
     npm start
     ```
-
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 ## Manually Configure Your Amplify Environment
 Amplify provides a set of tools that will allow us to quickly provision cloud resources in AWS to begin quickly building and deploying our application. For this tutorial we will create the following Amplify Resources -
@@ -505,7 +508,7 @@ To troubleshoot ensure the following are in the file listed above
 }
 ```
 
-If you ever got lost, or want to revert back to before you made a breaking change then come back to this [file](https://github.com/YubicoLabs/yed-self-service/blob/master/amplify/backend/api/yedselfsvcex/yedselfsvcex-cloudformation-template.json), and replace it with your changes.
+If you ever get lost, or want to revert back to before you made a breaking change then come back to this [file](https://github.com/YubicoLabs/yed-self-service/blob/master/amplify/backend/api/yedselfsvcex/yedselfsvcex-cloudformation-template.json), and replace it with your changes.
 
 
 <!-- CONTRIBUTING -->
@@ -557,4 +560,3 @@ Project Link: [https://github.com/YubicoLabs/yed-self-service](https://github.co
 [issues-url]: https://github.com/YubicoLabs/yed-self-service/issues
 [license-shield]: https://img.shields.io/github/license/YubicoLabs/yed-self-service.svg?style=for-the-badge
 [license-url]: https://github.com/YubicoLabs/yed-self-service/blob/master/LICENSE
-[product-screenshot]: images/screenshot.png
