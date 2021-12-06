@@ -454,7 +454,7 @@ If your application is purposed for external end users then your internal CX tea
 
 The current demo is configured for a single region PO. You will need to use the proper API token for the user’s region, e.g. North America / Canada is one region, EMEA is a different region and each have their own associated API token.
 
-More information can be found [here](#multi-region-purchase-orders-/-organizations)
+More information can be found [here](#multi-region-purchase-orders--organizations)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -584,6 +584,8 @@ To troubleshoot ensure the following are in the file listed above
 ```
 
 If you ever get lost, or want to revert back to before you made a breaking change then come back to this [file](https://github.com/YubicoLabs/yed-self-service/blob/master/amplify/backend/api/yedselfsvcex/yedselfsvcex-cloudformation-template.json), and replace it with your changes.
+
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- CONTRIBUTING -->
 
