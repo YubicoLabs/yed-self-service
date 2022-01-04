@@ -2,17 +2,16 @@
   "lambdaLayers": [],
   "environmentVariableList": [
     {
-      "cloudFormationParameterName": "yedApiUrl",
-      "environmentVariableName": "YED_API_URL"
-    },
-    {
       "cloudFormationParameterName": "defaultProductId",
       "environmentVariableName": "DEFAULT_PRODUCT_ID"
+    },
+    {
+      "cloudFormationParameterName": "yedApiUrl",
+      "environmentVariableName": "YED_API_URL"
     }
   ],
   "secretNames": [
-    "YED_API_TOKEN",
-    "YED_COOKIE"
+    "YED_API_TOKEN"
   ],
   "permissions": {
     "storage": {
