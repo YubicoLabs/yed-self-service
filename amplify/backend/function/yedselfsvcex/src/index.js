@@ -5,20 +5,13 @@ const aws = require('aws-sdk');
 
 const { Parameters } = await (new aws.SSM())
   .getParameters({
-    Names: ["YED_API_TOKEN","YED_COOKIE"].map(secretName => process.env[secretName]),
+    Names: ["YED_API_TOKEN"].map(secretName => process.env[secretName]),
     WithDecryption: true,
   })
   .promise();
 
 Parameters will be of the form { Name: 'secretName', Value: 'secretValue', ... }[]
 */
-/* Amplify Params - DO NOT EDIT
-	ENV
-	REGION
-	STORAGE_YEDSELFSVCDB_ARN
-	STORAGE_YEDSELFSVCDB_NAME
-	STORAGE_YEDSELFSVCDB_STREAMARN
-Amplify Params - DO NOT EDIT */
 const aws = require('aws-sdk');
 const axios = require('axios');
 const { errorMonitor } = require('events');
@@ -28,7 +21,6 @@ const YED_API_URL = process.env.YED_API_URL;
 const DEFAULT_PRODUCT_ID = process.env.DEFAULT_PRODUCT_ID;
 const TABLE_NAME = process.env.STORAGE_YEDSELFSVCDB_NAME;
 let YED_API_TOKEN;
-let YED_COOKIE;
 let API_HEADER;
 
 /**
@@ -267,7 +259,7 @@ exports.handler = async (event) => {
 
   const { Parameters } = await new aws.SSM()
     .getParameters({
-      Names: ['YED_API_TOKEN', 'YED_COOKIE'].map(
+      Names: ['YED_API_TOKEN'].map(
         (secretName) => process.env[secretName]
       ),
       WithDecryption: true,
@@ -278,11 +270,9 @@ exports.handler = async (event) => {
   let statusCode = 200;
 
   YED_API_TOKEN = Parameters[0]['Value'];
-  YED_COOKIE = Parameters[1]['Value']; //Yubico only value needed for bypassing proxy
   API_HEADER = {
     'Content-Type': 'application/json',
     Authorization: `Bearer ${YED_API_TOKEN}`,
-    Cookie: YED_COOKIE,
   };
 
   const httpMethod = event['httpMethod'];

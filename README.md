@@ -34,7 +34,7 @@
   <p align="center">
     Create a web portal driven by the YubiEnterprise API that allows your customers to order from your organization's inventory
     <br />
-    <a href="https://github.com/YubicoLabs/yed-self-service#about-the-lambda-logic"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/YubicoLabs/yed-self-service/tree/master#about-the-project"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     ·
@@ -62,8 +62,8 @@
     </li>
     <li><a href="#configuring-your-deployment-environment">Configuring Your Deployment Environment</a></li>
     <li><a href="#about-the-lambda-logic">About the Lambda Logic</a></li>
-    <li><a href="#next-steps">Next Steps</a></li>
     <li><a href="#about-the-react-app">About the React App</a></li>
+    <li><a href="#next-steps">Next Steps</a></li>
     <li><a href="#faqs-and-common-issues">FAQs and Common Issues</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
@@ -130,6 +130,7 @@ To get a local copy up and running follow these simple example steps.
   - For an API key contact your organization's Yubico Owner or your [Yubico sales contact](https://pages.yubico.com/contact)
   - Ensure you also have the API URL for your instance of YED
 - [AWS Account](https://aws.amazon.com/free/)
+  - The AWS CLI requires specific IAM permissions to perform various actions needed to deploy your application. Please ensure your AWS account has all the permissions listed in [this guide](https://docs.amplify.aws/cli/reference/iam/)
 - Install the AWS CLI v2
   - [Download link here](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html)
   - Ensure the CLI is configured to your AWS Account
@@ -175,29 +176,41 @@ If the Amplify CLI detects an Amplify project in your directory, you only need t
    amplify init
    ```
 2. Use the following values to initialize your Amplify environment
-   - Do you want to use an existing environment? No
-   - Environment Name: yeddev
-   - Default Editor: Make your personal selection
-   - Authentication Method: AWS Profile -> Select your personal profile
-   - **Give the terminal a moment to initialize the project, there are more prompts**
-   - Select Update Environment Values Now
-     - Select yedselfsvcex
-     - Select YED_API_URL
-     - Enter the URL from your YED instance
-     - Select DEFAULT_PRODUCT_ID
-     - Enter 5 (see the explanation below for /defaultinventory)
-   - Select Update Secret Values Now
-     - Select yedselfsvcex
-     - Update a secret
-     - YED_API_TOKEN
-     - Enter your API token from the YED console
-     - Select I'm done
-3. All that is left is to publish your Amplify Env using the following command
-   ```sh
-   amplify publish
-   ```
-4. Your website is ready to use, now run the following command
-`sh npm start `
+    - Do you want to use an existing environment? No
+    - Environment Name: yeddev
+    - Default Editor: Make your personal selection
+    - Authentication Method: AWS Profile -> Select your personal profile
+    - **Give the terminal a moment to initialize the project, there are more prompts**
+    - Select Update Secret Values Now
+      - Select yedselfsvcex
+      - Update a secret
+      - YED_API_TOKEN
+      - Enter your API token from the YED console
+    - Select I'm done
+3. Add your environment variables
+    - Once your project has finished initializing run the following command
+    ```sh
+    amplify update function
+    ```
+    - Select yedselfsvcex
+    - Select 'Environment variables configuration'
+    - You will now create the first env variable for your YED API URL. *Please note* - These env variable names are case sensitive
+      - Variable Name - YED_API_URL
+      - Variable Value - https://api.console.yubico.com/v1
+    - We will now create the env variable to set the default product used by the application
+      - Add new environment variable
+      - Variable Name - DEFAULT_PRODUCT_ID
+      - Variable Value - 5
+    - Select 'I'm done'
+    - Select 'N' when asked if you want to update the local lambda function
+4. All that is left is to publish your Amplify Env using the following command
+    ```sh
+    amplify publish
+    ```
+5. Your website is ready to use, now run the following command
+    ```sh
+    npm start
+    ```
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ## Manually Configure Your Amplify Environment
