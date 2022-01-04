@@ -31,10 +31,10 @@
       "Type": "String",
       "Default": "storageyedselfsvcdbStreamArn"
     },
-    "yedApiUrl": {
+    "defaultProductId": {
       "Type": "String"
     },
-    "defaultProductId": {
+    "yedApiUrl": {
       "Type": "String"
     }
   },
@@ -113,28 +113,6 @@
                 ]
               ]
             },
-            "YED_COOKIE": {
-              "Fn::Join": [
-                "",
-                [
-                  {
-                    "Fn::Sub": [
-                      "/amplify/${appId}/${env}/AMPLIFY_${functionName}_",
-                      {
-                        "appId": {
-                          "Ref": "secretsPathAmplifyAppId"
-                        },
-                        "env": {
-                          "Ref": "env"
-                        },
-                        "functionName": "yedselfsvcex"
-                      }
-                    ]
-                  },
-                  "YED_COOKIE"
-                ]
-              ]
-            },
             "STORAGE_YEDSELFSVCDB_NAME": {
               "Ref": "storageyedselfsvcdbName"
             },
@@ -144,11 +122,11 @@
             "STORAGE_YEDSELFSVCDB_STREAMARN": {
               "Ref": "storageyedselfsvcdbStreamArn"
             },
-            "YED_API_URL": {
-              "Ref": "yedApiUrl"
-            },
             "DEFAULT_PRODUCT_ID": {
               "Ref": "defaultProductId"
+            },
+            "YED_API_URL": {
+              "Ref": "yedApiUrl"
             }
           }
         },
