@@ -34,7 +34,7 @@
   <p align="center">
     Create a web portal driven by the YubiEnterprise API that allows your customers to order from your organization's inventory
     <br />
-    <a href="https://github.com/YubicoLabs/yed-self-service#about-the-lambda-logic"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/YubicoLabs/yed-self-service/tree/master#about-the-project"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     ·
@@ -62,8 +62,8 @@
     </li>
     <li><a href="#configuring-your-deployment-environment">Configuring Your Deployment Environment</a></li>
     <li><a href="#about-the-lambda-logic">About the Lambda Logic</a></li>
-    <li><a href="#next-steps">Next Steps</a></li>
     <li><a href="#about-the-react-app">About the React App</a></li>
+    <li><a href="#next-steps">Next Steps</a></li>
     <li><a href="#faqs-and-common-issues">FAQs and Common Issues</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
