@@ -137,6 +137,9 @@ To get a local copy up and running follow these simple example steps.
 - Install the AWS Amplify CLI
   - [Download link here](https://docs.amplify.aws/cli/)
   - Ensure you have configured the Amplify CLI ([Instructions here](https://docs.amplify.aws/cli/start/install/))
+- AWS SNS Instance
+  - Amplify is unable to create the SNS resource required to send alerts for low inventory. Follow these instructions to create an SNS resource
+  - Ensure that you name your topic **inv-monitor**, otherwise you will need to edit the lambda function, and execution role
 
 ### Installation
 
@@ -157,7 +160,6 @@ There are a few different options for creating your backend environment using Am
 
 - [Automatically Configure Your Amplify Environment](#automatically-configure-your-amplify-environment) - Single button offered by Amplify to build and configure your full environment
 - [Using This Repository to Deploy Your Amplify Environment](#using-this-repository-to-deploy-your-amplify-environment) - **This is the recommended option** - Clone this repo directly, and enter a few commands to deploy the environment using CloudFormation and to configure your application secret
-- [Manually Deploy Your Amplify Environment](#manually-configure-your-amplify-environment) - Step by step instructions on that guide you on each command needed to recreate the environment used in this repository
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -176,195 +178,31 @@ If the Amplify CLI detects an Amplify project in your directory, you only need t
    amplify init
    ```
 2. Use the following values to initialize your Amplify environment
-    - Do you want to use an existing environment? No
-    - Environment Name: yeddev
-    - Default Editor: Make your personal selection
-    - Authentication Method: AWS Profile -> Select your personal profile
-    - **Give the terminal a moment to initialize the project, there are more prompts**
-    - Select Update Secret Values Now
-      - Select yedselfsvcex
-      - Update a secret
-      - YED_API_TOKEN
-      - Enter your API token from the YED console
-    - Select I'm done
-3. Add your environment variables
-    - Once your project has finished initializing run the following command
-    ```sh
-    amplify update function
-    ```
-    - Select yedselfsvcex
-    - Select 'Environment variables configuration'
-    - You will now create the first env variable for your YED API URL. *Please note* - These env variable names are case sensitive
-      - Variable Name - YED_API_URL
-      - Variable Value - https://api.console.yubico.com/v1
-    - We will now create the env variable to set the default product used by the application
-      - Add new environment variable
-      - Variable Name - DEFAULT_PRODUCT_ID
-      - Variable Value - 5
-    - Select 'I'm done'
-    - Select 'N' when asked if you want to update the local lambda function
-4. All that is left is to publish your Amplify Env using the following command
-    ```sh
-    amplify publish
-    ```
-5. Your website is ready to use, now run the following command
-    ```sh
-    npm start
-    ```
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-## Manually Configure Your Amplify Environment
-
-Amplify provides a set of tools that will allow us to quickly provision cloud resources in AWS to begin quickly building and deploying our application. For this tutorial we will create the following Amplify Resources -
-
-- API - Using API Gateway and Lambda
-- Authentication - Using Cognito
-- Storage - Using DynamoDB
-
-### Initialize your Amplify environment
-
-1. Open the terminal in the root of your project directory and run the following command
+   - Do you want to use an existing environment? No
+   - Environment Name: yeddev
+   - Default Editor: Make your personal selection
+   - Authentication Method: AWS Profile -> Select your personal profile
+   - **Give the terminal a moment to initialize the project, there are more prompts**
+   - Select Update Secret Values Now
+     - Select yedselfsvcex
+     - Update a secret
+     - YED_API_TOKEN
+     - Enter your API token from the YED console
+     - Select 'I'm done' and perform the same steps for the resource yedselfserviceinv
+     - yedselfserviceinv will also require a secret variable for the AWS SNS resource - Please ensure you follow these steps, or set the secret after the lambda function is initialized
+   - Select I'm done
+3. All that is left is to publish your Amplify Env using the following command
    ```sh
-   amplify init
-   ```
-2. Use the following values to initialize your Amplify environment
-   - Enter a name for the project (react-amplified): yed-example
-   - Enter a name for the environment (dev): dev
-   - Choose the type of app that you're building (javascript): react
-   - Use default values for the other configurations
-
-### Initialize Cognito for authentication
-
-**Note:** The default configurations created here are not recommended for a production environment. It is expected that you will replace this module with the identity provider used by your organization
-
-1. Run the following command
-
-   ```sh
-   amplify add auth
-
    amplify push
    ```
-
-- To view your Cognito service at a later time please run
-  ```sh
-  amplify console
-  ```
-
-### Initialize your API and Lambda function
-
-Luckily Amplify allows you to configure your API in one step. To keep this example simple we are only using one API Gateway resource, and one Lambada function for all operations, though you can split this in a variety of different ways based on your requirements.
-
-#### Create the API and Lambda resource
-
-1. Run the following command
-   ```sh
-   amplify add api
-   ```
-2. Use the following values to initialize your API
-   - Service: REST
-   - Friendly Name for the label: yedselfsvcex
-   - Path: /yed
-   - Lambda source: Create a new Lambda function
-   - AWS Lambda function name: yedselfsvcex
-   - Runtime: NodeJS
-   - Function template: Hello World
-   - Do you want to configure advanced settings: No
-     - We will edit the Secret and Environment Variables in the following step
-   - Do you want to edit the local code now: No
-
-#### Create the Lambda environment and secret variables
-
-Now we will add the secret and environment variables for your lambda. The secret will be used for your YED API key, and the environment variable will be used for YED API URL
-
-1. Run the following command
-   ```sh
-   amplify update function
-   ```
-2. Select the Lambda to update: yedselfsvcex
-3. Choose Environment variables configuration
-4. Choose Add new environment variables
-5. Create the variable with the following details
-   - Name: YED_API_URL
-   - Value: {your YED API URL}
-6. Repeat this step for another environment variable
-   - Name: DEFAULT_PRODUCT_ID
-   - Value: 5
-   - This second variable is used to create a default product ID for this example, you can remove this from the code, or prevent the front end from calling the /inventorydefault URL, and instead allow the user to select their own key
-7. Now to create your secret variable for your YED API Key - This one is not set as an env variable, but instead within AWS Secret manager
-8. Run the following command
-   ```sh
-   amplify update function
-   ```
-9. Select the Lambda to update: yedselfsvcex
-10. Choose Environment variables configuration
-11. Choose Secret values configuration
-12. Create the variable with the following details
-    - Name: YED_API_TOKEN
-    - Value: {your YED API Secret}
-
-#### Configure the API paths
-
-We will now configure the paths needed by the API. These various paths are defined in the Lambda code, so ensure that all the paths required are created.
-
-1. Run the following command
-   ```sh
-   amplify update api
-   ```
-2. Service: REST
-3. REST API: yedselfsvcex
-4. Add another path
-5. Create a path with the following values
-   - Path: /address
-   - Lambda source: Use a Lambda function already added in the current Amplify project
-   - Lambda source: yedselfsvcex
-   - Restrict API access Yes
-   - Who should have access: Authenticated users only
-   - What kind of access: Create, Read, Update, Delete
-6. Repeat the step above for the following paths (all should be restricted to authenticated users)
-   - /inventory
-   - /order/{isbn}
-   - /defaultinventory
-   - /orders
-
-Your Lambda and API has now been created. Your new Lambda environment will not have the source code that came with this project so replace the file in your directory **amplify > backend ? function > yedselfsvcex > src > index.js** with the code found in [this file](https://github.com/YubicoLabs/yed-self-service/blob/master/amplify/backend/function/yedselfsvcex/src/index.js)
-
-Once completed run
-
-```sh
-amplify publish
-```
-
-### Initialize your data store
-
-In this section you will use Amplify to create persistent storage for your application using DynamoDB
-
-**Why do you need persistent storage?** We will be using this to store the relationship between a users identity and the shipment requests that they have created, something that is not available in the YED service. Consider the following example
-
-| User   | Shipment ID |
-| ------ | ----------- |
-| User 1 | Shipment 1  |
-| User 1 | Shipment 2  |
-| User 2 | Shipment 3  |
-
-If you are User 1, you should only have Read/Update/Delete permissions for Shipments 1 and 2, and should not be able to perform actions on Shipment 3. For User 2, you should only be able to perform actions on Shipment 3, and **not** on Shipments 1 and 2
-
-Complete the following to create your storage resource:
-
-1. Run the following command
-   ```sh
-   amplify add storage
-   ```
-2. Use the following values to initialize your resource:
-   - Storage service: NoSQL Database
-   - Project Name: Yedselfsvcdb
-   - Ensure you create **two** columns
-     - user_sub
-     - shipment_id
-     - **Caution** you do not change these column names, otherwise you will need to retry, or modify the Lambda source code
-   - Partition Key: shipment_id
-   - Select No for the remainder of the prompts
-   - Amplify will ask if you wish to edit your code, select **no**
-
+   - In this step you will be prompted to add your environment variables. Ensure you add environment variables for the -
+     - yedselfserviceinv - YED_API_URL: https://api.console.yubico.com/v1
+     - yedselfserviceinv - INV_THRESHOLD: 500 (or whatever number works for your inventory quantities)
+     - yedselfserviceex - YED_API_URL: https://api.console.yubico.com/v1
+     - yedselfserviceex - DEFAULT_PRODUCT_ID: 5
+   - **if your initial build fails, run the amplify push command another time**
+4. Your website is ready to use, now run the following command
+`sh npm start `
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ## About the Lambda Logic
@@ -403,6 +241,29 @@ Every method essentially calls to the YED API in the same manner - The call is m
 There are some checks on top of some of the calls to check if the user has permission to CRUD to the shipment.
 
 There is a 1:1 relationship between the operations + paths defined in exports,handler, and a method that calls to YED. There are a few helper methods if something needs to be done with the storage resource.
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+## About the Inventory Alert
+
+The second lambda function, yedselfserviceinv, introduces the functionality to alert an administrator if your YubiKey quantity falls below a specific threshold.
+
+The current logic compares ALL the items of your inventory from a result of a GET /inventory API call. This lambda is also set to run once a day, and on each run will send low quantity products to all the subscribers to your AWS SNS topic.
+
+**Where is my lambada logic?** - You don't need to go into the Lambda resource directly to edit your lambda, it can be done directly from your project. The Lambda index can be found in the directory **amplify > backend > function > yedselfserviceinv > src > index.js**
+
+### On using Env and Secret Variables
+
+At the top of the file there are some definitions that are generated based on configurations you have made using the Amplify CLI. If your code isn't working for some reason, make sure that you followed the same naming convention that was used.
+
+### About exports.handler
+
+As noted about it acts as the "main" of the application. It has four primary responsibilities
+
+- Gets the Secret Variables from the AWS SSM
+- Takes the JWT token passed by the user, and gets the user_sub. This will be used to identify the user
+- Switch/Case that reacts to the particular operation + path called by the user
+- Returns the response to the client
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
