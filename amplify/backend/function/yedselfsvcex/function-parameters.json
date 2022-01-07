@@ -8,6 +8,14 @@
     {
       "cloudFormationParameterName": "defaultProductId",
       "environmentVariableName": "DEFAULT_PRODUCT_ID"
+    },
+    {
+      "cloudFormationParameterName": "yedApiUrl",
+      "environmentVariableName": "YED_API_URL"
+    },
+    {
+      "cloudFormationParameterName": "defaultProductId",
+      "environmentVariableName": "DEFAULT_PRODUCT_ID"
     }
   ],
   "secretNames": [

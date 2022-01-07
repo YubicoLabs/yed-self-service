@@ -1,0 +1,13 @@
+{
+  "lambdaLayers": [],
+  "secretNames": [
+    "YED_API_TOKEN",
+    "YED_API_COOKIE"
+  ],
+  "environmentVariableList": [
+    {
+      "cloudFormationParameterName": "invThreshold",
+      "environmentVariableName": "INV_THRESHOLD"
+    }
+  ]
+}
