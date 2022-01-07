@@ -2,7 +2,8 @@
   "lambdaLayers": [],
   "secretNames": [
     "YED_API_TOKEN",
-    "YED_API_COOKIE"
+    "YED_API_COOKIE",
+    "SNS_ARN"
   ],
   "environmentVariableList": [
     {

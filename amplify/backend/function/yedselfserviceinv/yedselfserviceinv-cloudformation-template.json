@@ -146,7 +146,10 @@
           }
         },
         "Role": {
-          "Fn::GetAtt": ["LambdaExecutionRole", "Arn"]
+          "Fn::GetAtt": [
+            "LambdaExecutionRole",
+            "Arn"
+          ]
         },
         "Runtime": "nodejs14.x",
         "Layers": [],
@@ -180,16 +183,22 @@
             {
               "Effect": "Allow",
               "Principal": {
-                "Service": ["lambda.amazonaws.com"]
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
               },
-              "Action": ["sts:AssumeRole"]
+              "Action": [
+                "sts:AssumeRole"
+              ]
             }
           ]
         }
       }
     },
     "lambdaexecutionpolicy": {
-      "DependsOn": ["LambdaExecutionRole"],
+      "DependsOn": [
+        "LambdaExecutionRole"
+      ],
       "Type": "AWS::IAM::Policy",
       "Properties": {
         "PolicyName": "lambda-execution-policy",
@@ -206,24 +215,40 @@
               "Action": [
                 "logs:CreateLogGroup",
                 "logs:CreateLogStream",
-                "logs:PutLogEvents"
+                "logs:PutLogEvents",
+                "sns:Publish"
               ],
-              "Resource": {
-                "Fn::Sub": [
-                  "arn:aws:logs:${region}:${account}:log-group:/aws/lambda/${lambda}:log-stream:*",
-                  {
-                    "region": {
-                      "Ref": "AWS::Region"
-                    },
-                    "account": {
-                      "Ref": "AWS::AccountId"
-                    },
-                    "lambda": {
-                      "Ref": "LambdaFunction"
+              "Resource": [
+                {
+                  "Fn::Sub": [
+                    "arn:aws:logs:${region}:${account}:log-group:/aws/lambda/${lambda}:log-stream:*",
+                    {
+                      "region": {
+                        "Ref": "AWS::Region"
+                      },
+                      "account": {
+                        "Ref": "AWS::AccountId"
+                      },
+                      "lambda": {
+                        "Ref": "LambdaFunction"
+                      }
                     }
-                  }
-                ]
-              }
+                  ]
+                },
+                {
+                  "Fn::Sub": [
+                    "arn:aws:sns:${region}:${account}:inv-monitor",
+                    {
+                      "region": {
+                        "Ref": "AWS::Region"
+                      },
+                      "account": {
+                        "Ref": "AWS::AccountId"
+                      }
+                    }
+                  ]
+                }
+              ]
             }
           ]
         }
@@ -240,7 +265,10 @@
         "Targets": [
           {
             "Arn": {
-              "Fn::GetAtt": ["LambdaFunction", "Arn"]
+              "Fn::GetAtt": [
+                "LambdaFunction",
+                "Arn"
+              ]
             },
             "Id": {
               "Ref": "LambdaFunction"
@@ -258,7 +286,10 @@
         "Action": "lambda:InvokeFunction",
         "Principal": "events.amazonaws.com",
         "SourceArn": {
-          "Fn::GetAtt": ["CloudWatchEvent", "Arn"]
+          "Fn::GetAtt": [
+            "CloudWatchEvent",
+            "Arn"
+          ]
         }
       }
     },
@@ -276,7 +307,10 @@
           "Statement": [
             {
               "Effect": "Allow",
-              "Action": ["ssm:GetParameter", "ssm:GetParameters"],
+              "Action": [
+                "ssm:GetParameter",
+                "ssm:GetParameters"
+              ],
               "Resource": {
                 "Fn::Join": [
                   "",
@@ -312,30 +346,9 @@
           ]
         }
       },
-      "DependsOn": ["LambdaExecutionRole"]
-    },
-    "SNSPublishPolicy": {
-      "Type": "AWS::IAM::Policy",
-      "Properties": {
-        "PolicyName": "yed-sns-inv",
-        "Roles": [
-          {
-            "Ref": "LambdaExecutionRole"
-          }
-        ],
-        "PolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Sid": "VisualEditor0",
-              "Effect": "Allow",
-              "Action": "sns:Publish",
-              "Resource": "arn:aws:sns:us-east-1:764504484168:inv-monitor"
-            }
-          ]
-        }
-      },
-      "DependsOn": ["LambdaExecutionRole"]
+      "DependsOn": [
+        "LambdaExecutionRole"
+      ]
     }
   },
   "Outputs": {
@@ -346,7 +359,10 @@
     },
     "Arn": {
       "Value": {
-        "Fn::GetAtt": ["LambdaFunction", "Arn"]
+        "Fn::GetAtt": [
+          "LambdaFunction",
+          "Arn"
+        ]
       }
     },
     "Region": {

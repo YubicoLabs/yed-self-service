@@ -2,34 +2,18 @@
   "lambdaLayers": [],
   "environmentVariableList": [
     {
-      "cloudFormationParameterName": "yedApiUrl",
-      "environmentVariableName": "YED_API_URL"
-    },
-    {
       "cloudFormationParameterName": "defaultProductId",
       "environmentVariableName": "DEFAULT_PRODUCT_ID"
     },
     {
       "cloudFormationParameterName": "yedApiUrl",
       "environmentVariableName": "YED_API_URL"
-    },
-    {
-      "cloudFormationParameterName": "defaultProductId",
-      "environmentVariableName": "DEFAULT_PRODUCT_ID"
     }
   ],
-  "secretNames": [
-    "YED_API_TOKEN",
-    "YED_COOKIE"
-  ],
+  "secretNames": ["YED_API_TOKEN", "YED_COOKIE"],
   "permissions": {
     "storage": {
-      "yedselfsvcdb": [
-        "create",
-        "read",
-        "update",
-        "delete"
-      ]
+      "yedselfsvcdb": ["create", "read", "update", "delete"]
     }
   }
 }
