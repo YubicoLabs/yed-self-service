@@ -184,74 +184,6 @@ If the Amplify CLI detects an Amplify project in your directory, you only need t
    amplify init
    ```
 2. Use the following values to initialize your Amplify environment
-<<<<<<< HEAD
-    - Do you want to use an existing environment? No
-    - Environment Name: yeddev
-    - Default Editor: Make your personal selection
-    - Authentication Method: AWS Profile -> Select your personal profile
-    - **Give the terminal a moment to initialize the project, there are more prompts**
-    - Select Update Secret Values Now
-      - Select yedselfsvcex
-      - Update a secret
-      - YED_API_TOKEN
-      - Enter your API token from the YED console
-    - Select I'm done
-3. Add your environment variables
-    - Once your project has finished initializing run the following command
-    ```sh
-    amplify update function
-    ```
-    - Select yedselfsvcex
-    - Select 'Environment variables configuration'
-    - You will now create the first env variable for your YED API URL. *Please note* - These env variable names are case sensitive
-      - Variable Name - YED_API_URL
-      - Variable Value - https://api.console.yubico.com/v1
-    - We will now create the env variable to set the default product used by the application
-      - Add new environment variable
-      - Variable Name - DEFAULT_PRODUCT_ID
-      - Variable Value - 5
-    - Select 'I'm done'
-    - Select 'N' when asked if you want to update the local lambda function
-4. All that is left is to publish your Amplify Env using the following command
-    ```sh
-    amplify publish
-    ```
-5. Your website is ready to use, now run the following command
-    ```sh
-    npm start
-    ```
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-## Manually Configure Your Amplify Environment
-
-Amplify provides a set of tools that will allow us to quickly provision cloud resources in AWS to begin quickly building and deploying our application. For this tutorial we will create the following Amplify Resources -
-
-- API - Using API Gateway and Lambda
-- Authentication - Using Cognito
-- Storage - Using DynamoDB
-
-### Initialize your Amplify environment
-
-1. Open the terminal in the root of your project directory and run the following command
-   ```sh
-   amplify init
-   ```
-2. Use the following values to initialize your Amplify environment
-   - Enter a name for the project (react-amplified): yed-example
-   - Enter a name for the environment (dev): dev
-   - Choose the type of app that you're building (javascript): react
-   - Use default values for the other configurations
-
-### Initialize Cognito for authentication
-
-**Note:** The default configurations created here are not recommended for a production environment. It is expected that you will replace this module with the identity provider used by your organization
-
-1. Run the following command
-
-   ```sh
-   amplify add auth
-
-=======
    - Do you want to use an existing environment? No
    - Environment Name: yeddev
    - Default Editor: Make your personal selection
@@ -267,7 +199,6 @@ Amplify provides a set of tools that will allow us to quickly provision cloud re
    - Select I'm done
 3. All that is left is to publish your Amplify Env using the following command
    ```sh
->>>>>>> 27da279fe80b8ccb21a87a929139c65b58e23036
    amplify push
    ```
    - In this step you will be prompted to add your environment variables. Ensure you add environment variables for the -
