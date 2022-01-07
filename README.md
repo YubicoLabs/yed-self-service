@@ -103,7 +103,7 @@ Here is a description of each of the components above, and why they are included
 4. **Order Management Service** - This is the core of your backend logic - This is where you will configure how your app will handle user requests and send them to YED. It also provides a way to abstract away the YED API secret from the client
 5. **Order Database** - Used to track the relationship between a user and their shipment IDs
 6. **YED API** - Your organizations instance of YED
-7. **Email / SMS Notification** - Not included in this example, but this code should be extended to send notifications to users based on their shipments status
+7. **Email / SMS Notification** - An example is included that can send an email alert to an admin if the amount of inventory remaining falls under a specified threshold
 
 ## Built With
 
@@ -138,8 +138,14 @@ To get a local copy up and running follow these simple example steps.
   - [Download link here](https://docs.amplify.aws/cli/)
   - Ensure you have configured the Amplify CLI ([Instructions here](https://docs.amplify.aws/cli/start/install/))
 - AWS SNS Instance
-  - Amplify is unable to create the SNS resource required to send alerts for low inventory. Follow these instructions to create an SNS resource
-  - Ensure that you name your topic **inv-monitor**, otherwise you will need to edit the lambda function, and execution role
+  - Amplify is unable to create the SNS resource required to send alerts for low inventory. Follow these instructions to create an SNS resource:
+    1. Open AWS SNS
+    2. In the section labeled "Topics" click **Create Topic**
+    3. Name the topic **inv-monitor** - Keep the default setting
+    4. Once created go into "Subscriptions"
+    5. Set protocol to **Email**, and on Endpoint enter the email address of your YED Admin to receive inventory alerts
+    6. Ensure that you confirm the email in your inbox to continue to begin to receive alerts from AWS SNS
+  - You are now ready to send alerts through this application
 
 ### Installation
 
@@ -200,9 +206,13 @@ If the Amplify CLI detects an Amplify project in your directory, you only need t
      - yedselfserviceinv - INV_THRESHOLD: 500 (or whatever number works for your inventory quantities)
      - yedselfserviceex - YED_API_URL: https://api.console.yubico.com/v1
      - yedselfserviceex - DEFAULT_PRODUCT_ID: 5
-   - **if your initial build fails, run the amplify push command another time**
+   - **If your initial build fails, run the amplify push command another time**
 4. Your website is ready to use, now run the following command
-`sh npm start `
+
+```sh
+npm start
+```
+
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ## About the Lambda Logic
