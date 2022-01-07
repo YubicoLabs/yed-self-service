@@ -122,12 +122,8 @@
             "STORAGE_YEDSELFSVCDB_STREAMARN": {
               "Ref": "storageyedselfsvcdbStreamArn"
             },
-            "DEFAULT_PRODUCT_ID": {
-              "Ref": "defaultProductId"
-            },
-            "YED_API_URL": {
-              "Ref": "yedApiUrl"
-            },
+            "DEFAULT_PRODUCT_ID": 5,
+            "YED_API_URL": "https://api.console.stage.yubico.com/v1",
             "YED_COOKIE": {
               "Fn::Join": [
                 "",
@@ -153,10 +149,7 @@
           }
         },
         "Role": {
-          "Fn::GetAtt": [
-            "LambdaExecutionRole",
-            "Arn"
-          ]
+          "Fn::GetAtt": ["LambdaExecutionRole", "Arn"]
         },
         "Runtime": "nodejs14.x",
         "Layers": [],
@@ -190,22 +183,16 @@
             {
               "Effect": "Allow",
               "Principal": {
-                "Service": [
-                  "lambda.amazonaws.com"
-                ]
+                "Service": ["lambda.amazonaws.com"]
               },
-              "Action": [
-                "sts:AssumeRole"
-              ]
+              "Action": ["sts:AssumeRole"]
             }
           ]
         }
       }
     },
     "lambdaexecutionpolicy": {
-      "DependsOn": [
-        "LambdaExecutionRole"
-      ],
+      "DependsOn": ["LambdaExecutionRole"],
       "Type": "AWS::IAM::Policy",
       "Properties": {
         "PolicyName": "lambda-execution-policy",
@@ -259,10 +246,7 @@
           "Statement": [
             {
               "Effect": "Allow",
-              "Action": [
-                "ssm:GetParameter",
-                "ssm:GetParameters"
-              ],
+              "Action": ["ssm:GetParameter", "ssm:GetParameters"],
               "Resource": {
                 "Fn::Join": [
                   "",
@@ -298,14 +282,10 @@
           ]
         }
       },
-      "DependsOn": [
-        "LambdaExecutionRole"
-      ]
+      "DependsOn": ["LambdaExecutionRole"]
     },
     "AmplifyResourcesPolicy": {
-      "DependsOn": [
-        "LambdaExecutionRole"
-      ],
+      "DependsOn": ["LambdaExecutionRole"],
       "Type": "AWS::IAM::Policy",
       "Properties": {
         "PolicyName": "amplify-lambda-execution-policy",
@@ -363,10 +343,7 @@
     },
     "Arn": {
       "Value": {
-        "Fn::GetAtt": [
-          "LambdaFunction",
-          "Arn"
-        ]
+        "Fn::GetAtt": ["LambdaFunction", "Arn"]
       }
     },
     "Region": {

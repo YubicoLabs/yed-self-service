@@ -1,10 +1,28 @@
+/*
+Use the following code to retrieve configured secrets from SSM:
+
+const aws = require('aws-sdk');
+
+const { Parameters } = await (new aws.SSM())
+  .getParameters({
+    Names: ["YED_API_TOKEN","YED_API_COOKIE","SNS_ARN"].map(secretName => process.env[secretName]),
+    WithDecryption: true,
+  })
+  .promise();
+
+Parameters will be of the form { Name: 'secretName', Value: 'secretValue', ... }[]
+*/
 const aws = require('aws-sdk');
 const axios = require('axios');
 
 const YED_API_URL = "https://api.console.stage.yubico.com/v1";
+let YED_API_TOKEN = "";
+let YED_API_COOKIE = ""
+let SNS_ARN = "";
 
 exports.handler = async (event, context) => {
     console.log("Entered Handler");
+    await exposeSecrets();
     const fullInvList = await getInventory();
     const lowInvList = determineLowInv(fullInvList.organization_product_inventory);
     const message = formatMessage(lowInvList);
@@ -47,9 +65,10 @@ function formatMessage(lowInvList) {
 async function publishMessage(message) {
     console.log("publishMessage, Preparing to send message, ", message);
     var sns = new aws.SNS();
+    console.log(SNS_ARN)
     var params = {
         Message: message,
-        TopicArn: "arn:aws:sns:us-east-1:764504484168:inv-monitor"
+        TopicArn: SNS_ARN
     };
     var snsPromise = sns.publish(params).promise();
     await snsPromise.then((data) => {
@@ -82,15 +101,6 @@ async function getInventory() {
 
 async function formatHeader() {
     console.log("formatHeader, Formatting HTTP header");
-    const { Parameters } = await (new aws.SSM())
-    .getParameters({
-      Names: ["YED_API_TOKEN","YED_API_COOKIE"].map(secretName => process.env[secretName]),
-      WithDecryption: true,
-    })
-    .promise();
-
-    const YED_API_COOKIE = Parameters[0]['Value'];
-    const YED_API_TOKEN = Parameters[1]['Value']; //Yubico only value needed for bypassing proxy
 
     const API_HEADER = {
         'Content-Type': 'application/json',
@@ -99,4 +109,16 @@ async function formatHeader() {
     }
 
     return API_HEADER;
+}
+
+async function exposeSecrets() {
+    const { Parameters } = await (new aws.SSM())
+      .getParameters({
+        Names: ["YED_API_TOKEN","YED_API_COOKIE","SNS_ARN"].map(secretName => process.env[secretName]),
+        WithDecryption: true,
+      })
+      .promise();
+    YED_API_TOKEN = Parameters[2]['Value'];;
+    YED_API_COOKIE = Parameters[1]['Value'];;
+    SNS_ARN = Parameters[0]['Value'];;
 }
