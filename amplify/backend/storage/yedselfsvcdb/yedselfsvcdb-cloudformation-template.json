@@ -1,122 +1,114 @@
 {
-    "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "DynamoDB resource stack creation using Amplify CLI",
-    "Parameters": {
-        "partitionKeyName": {
-            "Type": "String"
-        },
-        "partitionKeyType": {
-            "Type": "String"
-        },
-        "env": {
-            "Type": "String"
-        },
-        
-        "tableName": {
-            "Type": "String"
-        }
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "{\"createdOn\":\"Mac\",\"createdBy\":\"Amplify\",\"createdWith\":\"7.3.6\",\"stackType\":\"storage-DynamoDB\",\"metadata\":{}}",
+  "Parameters": {
+    "partitionKeyName": {
+      "Type": "String"
     },
-    "Conditions": {
-        "ShouldNotCreateEnvResources": {
-            "Fn::Equals": [
-                {
-                    "Ref": "env"
-                },
-                "NONE"
-            ]
-        }
+    "partitionKeyType": {
+      "Type": "String"
     },
-    "Resources": {
-        "DynamoDBTable": {
-            "Type": "AWS::DynamoDB::Table",
-            "Properties": {
-                "AttributeDefinitions": [
-                  
-                  {
-                      "AttributeName": "shipment_id",
-                      "AttributeType": "S"
-                  } 
-                  
-                ],
-                "KeySchema": [
-                  
-                  {
-                    "AttributeName": "shipment_id",
-                    "KeyType": "HASH"
-                  } 
-                  
-                ],
-                "ProvisionedThroughput": {
-                    "ReadCapacityUnits": "5",
-                    "WriteCapacityUnits": "5"
-                },
-                "StreamSpecification": {
-                    "StreamViewType": "NEW_IMAGE"
-                },
-                "TableName": {
-                    "Fn::If": [
-                        "ShouldNotCreateEnvResources",
-                        {
-                           "Ref": "tableName"
-                        }, 
-                        {
-
-                            "Fn::Join": [
-                                "",
-                                [
-                                  {
-                                    "Ref": "tableName"
-                                  },
-                                  "-",
-                                  {
-                                    "Ref": "env"
-                                  }
-                                ]
-                            ]
-                        }
-                    ]
-                }
-                
-            }
-        }
+    "env": {
+      "Type": "String"
     },
-    "Outputs": {
-        "Name": {
-            "Value": {
-                "Ref": "DynamoDBTable"
-            }
-        },
-        "Arn": {
-            "Value": {
-                "Fn::GetAtt": [
-                    "DynamoDBTable",
-                    "Arn"
-                ]
-            }
-        },
-        "StreamArn": {
-            "Value": {
-                "Fn::GetAtt": [
-                    "DynamoDBTable",
-                    "StreamArn"
-                ]
-            }
-        },
-        "PartitionKeyName": {
-            "Value": {
-                "Ref": "partitionKeyName"
-            }
-        },
-        "PartitionKeyType": {
-            "Value": {
-                "Ref": "partitionKeyType"
-            }
-        },
-        
-        "Region": {
-            "Value": {
-                "Ref": "AWS::Region"
-            }
-        }
+    "tableName": {
+      "Type": "String"
     }
+  },
+  "Conditions": {
+    "ShouldNotCreateEnvResources": {
+      "Fn::Equals": [
+        {
+          "Ref": "env"
+        },
+        "NONE"
+      ]
+    }
+  },
+  "Resources": {
+    "DynamoDBTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "shipment_id",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "shipment_id",
+            "KeyType": "HASH"
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": "5",
+          "WriteCapacityUnits": "5"
+        },
+        "StreamSpecification": {
+          "StreamViewType": "NEW_IMAGE"
+        },
+        "TableName": {
+          "Fn::If": [
+            "ShouldNotCreateEnvResources",
+            {
+              "Ref": "tableName"
+            },
+            {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "tableName"
+                  },
+                  "-",
+                  {
+                    "Ref": "env"
+                  }
+                ]
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "Name": {
+      "Value": {
+        "Ref": "DynamoDBTable"
+      }
+    },
+    "Arn": {
+      "Value": {
+        "Fn::GetAtt": [
+          "DynamoDBTable",
+          "Arn"
+        ]
+      }
+    },
+    "StreamArn": {
+      "Value": {
+        "Fn::GetAtt": [
+          "DynamoDBTable",
+          "StreamArn"
+        ]
+      }
+    },
+    "PartitionKeyName": {
+      "Value": {
+        "Ref": "partitionKeyName"
+      }
+    },
+    "PartitionKeyType": {
+      "Value": {
+        "Ref": "partitionKeyType"
+      }
+    },
+    "Region": {
+      "Value": {
+        "Ref": "AWS::Region"
+      }
+    }
+  }
 }

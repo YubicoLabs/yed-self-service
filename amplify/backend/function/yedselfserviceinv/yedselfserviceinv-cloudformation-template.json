@@ -19,22 +19,7 @@
     "secretsPathAmplifyAppId": {
       "Type": "String"
     },
-    "storageyedselfsvcdbName": {
-      "Type": "String",
-      "Default": "storageyedselfsvcdbName"
-    },
-    "storageyedselfsvcdbArn": {
-      "Type": "String",
-      "Default": "storageyedselfsvcdbArn"
-    },
-    "storageyedselfsvcdbStreamArn": {
-      "Type": "String",
-      "Default": "storageyedselfsvcdbStreamArn"
-    },
-    "defaultProductId": {
-      "Type": "String"
-    },
-    "yedApiUrl": {
+    "invThreshold": {
       "Type": "String"
     }
   },
@@ -68,12 +53,12 @@
         "FunctionName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "yedselfsvcex",
+            "yedselfserviceinv",
             {
               "Fn::Join": [
                 "",
                 [
-                  "yedselfsvcex",
+                  "yedselfserviceinv",
                   "-",
                   {
                     "Ref": "env"
@@ -105,7 +90,7 @@
                         "env": {
                           "Ref": "env"
                         },
-                        "functionName": "yedselfsvcex"
+                        "functionName": "yedselfserviceinv"
                       }
                     ]
                   },
@@ -113,17 +98,29 @@
                 ]
               ]
             },
-            "STORAGE_YEDSELFSVCDB_NAME": {
-              "Ref": "storageyedselfsvcdbName"
+            "SNS_ARN": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Fn::Sub": [
+                      "/amplify/${appId}/${env}/AMPLIFY_${functionName}_",
+                      {
+                        "appId": {
+                          "Ref": "secretsPathAmplifyAppId"
+                        },
+                        "env": {
+                          "Ref": "env"
+                        },
+                        "functionName": "yedselfserviceinv"
+                      }
+                    ]
+                  },
+                  "SNS_ARN"
+                ]
+              ]
             },
-            "STORAGE_YEDSELFSVCDB_ARN": {
-              "Ref": "storageyedselfsvcdbArn"
-            },
-            "STORAGE_YEDSELFSVCDB_STREAMARN": {
-              "Ref": "storageyedselfsvcdbStreamArn"
-            },
-            "DEFAULT_PRODUCT_ID": 5,
-            "YED_API_URL": "https://api.console.stage.yubico.com/v1"
+            "INV_THRESHOLD": 600
           }
         },
         "Role": {
@@ -140,12 +137,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "yedselfservicecsLambdaRole2a6b94c2",
+            "yedselfservicecsLambdaRole7905087f",
             {
               "Fn::Join": [
                 "",
                 [
-                  "yedselfservicecsLambdaRole2a6b94c2",
+                  "yedselfservicecsLambdaRole7905087f",
                   "-",
                   {
                     "Ref": "env"
@@ -187,26 +184,75 @@
               "Action": [
                 "logs:CreateLogGroup",
                 "logs:CreateLogStream",
-                "logs:PutLogEvents"
+                "logs:PutLogEvents",
+                "sns:Publish"
               ],
-              "Resource": {
-                "Fn::Sub": [
-                  "arn:aws:logs:${region}:${account}:log-group:/aws/lambda/${lambda}:log-stream:*",
-                  {
-                    "region": {
-                      "Ref": "AWS::Region"
-                    },
-                    "account": {
-                      "Ref": "AWS::AccountId"
-                    },
-                    "lambda": {
-                      "Ref": "LambdaFunction"
+              "Resource": [
+                {
+                  "Fn::Sub": [
+                    "arn:aws:logs:${region}:${account}:log-group:/aws/lambda/${lambda}:log-stream:*",
+                    {
+                      "region": {
+                        "Ref": "AWS::Region"
+                      },
+                      "account": {
+                        "Ref": "AWS::AccountId"
+                      },
+                      "lambda": {
+                        "Ref": "LambdaFunction"
+                      }
                     }
-                  }
-                ]
-              }
+                  ]
+                },
+                {
+                  "Fn::Sub": [
+                    "arn:aws:sns:${region}:${account}:inv-monitor",
+                    {
+                      "region": {
+                        "Ref": "AWS::Region"
+                      },
+                      "account": {
+                        "Ref": "AWS::AccountId"
+                      }
+                    }
+                  ]
+                }
+              ]
             }
           ]
+        }
+      }
+    },
+    "CloudWatchEvent": {
+      "Type": "AWS::Events::Rule",
+      "Properties": {
+        "Description": "Schedule rule for Lambda",
+        "ScheduleExpression": {
+          "Ref": "CloudWatchRule"
+        },
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": ["LambdaFunction", "Arn"]
+            },
+            "Id": {
+              "Ref": "LambdaFunction"
+            }
+          }
+        ]
+      }
+    },
+    "PermissionForEventsToInvokeLambda": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "LambdaFunction"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": ["CloudWatchEvent", "Arn"]
         }
       }
     },
@@ -248,7 +294,7 @@
                           "env": {
                             "Ref": "env"
                           },
-                          "functionName": "yedselfsvcex"
+                          "functionName": "yedselfserviceinv"
                         }
                       ]
                     },
@@ -261,56 +307,6 @@
         }
       },
       "DependsOn": ["LambdaExecutionRole"]
-    },
-    "AmplifyResourcesPolicy": {
-      "DependsOn": ["LambdaExecutionRole"],
-      "Type": "AWS::IAM::Policy",
-      "Properties": {
-        "PolicyName": "amplify-lambda-execution-policy",
-        "Roles": [
-          {
-            "Ref": "LambdaExecutionRole"
-          }
-        ],
-        "PolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Effect": "Allow",
-              "Action": [
-                "dynamodb:Put*",
-                "dynamodb:Create*",
-                "dynamodb:BatchWriteItem",
-                "dynamodb:Get*",
-                "dynamodb:BatchGetItem",
-                "dynamodb:List*",
-                "dynamodb:Describe*",
-                "dynamodb:Scan",
-                "dynamodb:Query",
-                "dynamodb:Update*",
-                "dynamodb:RestoreTable*",
-                "dynamodb:Delete*"
-              ],
-              "Resource": [
-                {
-                  "Ref": "storageyedselfsvcdbArn"
-                },
-                {
-                  "Fn::Join": [
-                    "/",
-                    [
-                      {
-                        "Ref": "storageyedselfsvcdbArn"
-                      },
-                      "index/*"
-                    ]
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      }
     }
   },
   "Outputs": {
@@ -332,6 +328,11 @@
     "LambdaExecutionRole": {
       "Value": {
         "Ref": "LambdaExecutionRole"
+      }
+    },
+    "CloudWatchEventRule": {
+      "Value": {
+        "Ref": "CloudWatchEvent"
       }
     }
   }
