@@ -137,15 +137,16 @@ To get a local copy up and running follow these simple example steps.
 - Install the AWS Amplify CLI
   - [Download link here](https://docs.amplify.aws/cli/)
   - Ensure you have configured the Amplify CLI ([Instructions here](https://docs.amplify.aws/cli/start/install/))
-- AWS SNS Instance
+- [AWS SNS (Simple Notification Service) Instance](https://aws.amazon.com/sns/)
   - Amplify is unable to create the SNS resource required to send alerts for low inventory. Follow these instructions to create an SNS resource:
     1. Open AWS SNS
     2. In the section labeled "Topics" click **Create Topic**
-    3. Name the topic **inv-monitor** - Keep the default setting
-    4. Once created go into "Subscriptions"
-    5. Set protocol to **Email**, and on Endpoint enter the email address of your YED Admin to receive inventory alerts
-    6. Ensure that you confirm the email in your inbox to continue to begin to receive alerts from AWS SNS
+    3. Name the topic **inv-monitor** - Keep the default settings
+    4. Once created go to "Subscriptions"
+    5. Set protocol to **Email**, and on Endpoint enter the email address of your YED Admin who will receive inventory alerts
+    6. Ensure that you confirm the email in your inbox to begin to receive alerts from AWS SNS
   - You are now ready to send alerts through this application
+  - Before you exit, be sure to note your SNS topics ARN, as it will be used during the deployment step below
 
 ### Installation
 
@@ -162,7 +163,7 @@ To get a local copy up and running follow these simple example steps.
 
 ## Configuring Your Deployment Environment
 
-There are a few different options for creating your backend environment using Amplify. The following three sections outline the steps for creating your environment. Below is an overview of the options
+There are a few different options for creating your backend environment using Amplify. The following sections outline the steps for creating your environment. Below is an overview of the options
 
 - [Automatically Configure Your Amplify Environment](#automatically-configure-your-amplify-environment) - Single button offered by Amplify to build and configure your full environment
 - [Using This Repository to Deploy Your Amplify Environment](#using-this-repository-to-deploy-your-amplify-environment) - **This is the recommended option** - Clone this repo directly, and enter a few commands to deploy the environment using CloudFormation and to configure your application secret
@@ -195,7 +196,7 @@ If the Amplify CLI detects an Amplify project in your directory, you only need t
      - YED_API_TOKEN
      - Enter your API token from the YED console
      - Select 'I'm done' and perform the same steps for the resource yedselfserviceinv
-     - yedselfserviceinv will also require a secret variable for the AWS SNS resource - Please ensure you follow these steps, or set the secret after the lambda function is initialized
+     - yedselfserviceinv will also require a secret variable for the AWS SNS resource ARN - Please ensure you follow the steps in the [prerequisites section](https://github.com/YubicoLabs/yed-self-service/tree/master#prerequisites) to create your SNS service to get the ARN
    - Select I'm done
 3. All that is left is to publish your Amplify Env using the following command
    ```sh
@@ -215,13 +216,13 @@ npm start
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-## About the Lambda Logic
+## About the Shipment Logic
 
-The Lambda resource is where your backend logic will reside - This is important as this is where your application will be calling directly to the YED API to create, manage, and get orders (and perform other operations like address validate).
+This Lambda resource (yedselfserviceex) is where your backend logic to make shipments will reside - This is important as this is where your application will be calling directly to the YED API to create, manage, and get orders (and perform other operations like address validation).
 
 The current application does not have a corresponding endpoint to every operation in YED. If additional functionality is required, use the code as a template for calling the other YED endpoints
 
-**Where is my lambada logic?** - You don't need to go into the Lambda resource directly to edit your lambda, it can be done directly from your project. The Lambda index can be found in the directory **amplify > backend > function > yedselfsvcex > src > index.js**
+**Where is my lambada logic?** - You don't need to go into the Lambda resource directly to edit your lambda, it can be done directly from your project. The Lambda index can be found in the directory [**amplify > backend > function > yedselfsvcex > src > index.js**](https://github.com/YubicoLabs/yed-self-service/tree/master/amplify/backend/function/yedselfsvcex)
 
 ### On using Env and Secret Variables
 
@@ -256,11 +257,11 @@ There is a 1:1 relationship between the operations + paths defined in exports,ha
 
 ## About the Inventory Alert
 
-The second lambda function, yedselfserviceinv, introduces the functionality to alert an administrator if your YubiKey quantity falls below a specific threshold.
+The second lambda function (yedselfserviceinv) introduces the functionality to alert an administrator if your YubiKey quantity falls below a specific threshold.
 
-The current logic compares ALL the items of your inventory from a result of a GET /inventory API call. This lambda is also set to run once a day, and on each run will send low quantity products to all the subscribers to your AWS SNS topic.
+The current logic compares ALL the items of your inventory from a result of a GET /inventory API call. This lambda is also set to run once a day, and on each run will send alerts to a defined administrator indicating that there may be an item with low quantity in your YED inventory.
 
-**Where is my lambada logic?** - You don't need to go into the Lambda resource directly to edit your lambda, it can be done directly from your project. The Lambda index can be found in the directory **amplify > backend > function > yedselfserviceinv > src > index.js**
+**Where is my lambada logic?** - You don't need to go into the Lambda resource directly to edit your lambda, it can be done directly from your project. The Lambda index can be found in the directory [**amplify > backend > function > yedselfserviceinv > src > index.js**](https://github.com/YubicoLabs/yed-self-service/tree/master/amplify/backend/function/yedselfserviceinv)
 
 ### On using Env and Secret Variables
 
@@ -270,10 +271,16 @@ At the top of the file there are some definitions that are generated based on co
 
 As noted about it acts as the "main" of the application. It has four primary responsibilities
 
-- Gets the Secret Variables from the AWS SSM
-- Takes the JWT token passed by the user, and gets the user_sub. This will be used to identify the user
-- Switch/Case that reacts to the particular operation + path called by the user
-- Returns the response to the client
+- Call to the YED API to get your full inventory
+- Determine which inventory items have a "low" quantity (threshold is determined by your business requirements)
+- Formats an email message based on the inventory amounts
+- Sends an email to AWS SNS with the message noted
+
+### Sample Email
+
+Below is an example of an email sent by the AWS SNS service. If you do not initially receive this email after a test run, or timed trigger, please check your Spam folder.
+
+![Email Sample](/docs/images/email-sample.png)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -344,6 +351,10 @@ More information can be found [here](#multi-region-purchase-orders--organization
 
 ## FAQs and Common Issues
 
+### My Initial Build Failed
+
+It's been noted that the initial build will occasionally fail if a secret value was not provided to the service. If you get an error on your initial run, try running the **amplify push** command one more time. If the issue persists then please open an Issue on this repository so that the cause can be investigated.
+
 ### Multi-Region Purchase Orders / Organizations
 
 If organizations are shipping keys to both the US/Canada and to EMEA, two API tokens are required, as both regions are treated as different organizations.
@@ -373,6 +384,10 @@ aws.exports.js should automatically be generated
 ### My API calls to YED are failing
 
 There might be two reasons for this - You might not have configured your API secret, or your YED API URL is incorrect. See this section on [configuring your Environment and Secret Variables](#create-the-api-and-lambda-resource)
+
+### When I create an account, I get an error noting "User Pool does not exist"
+
+If you receive an error indicating that a user pool does not exist (when creating an account or logging in), ensure that you go to your aws-exports.js file in your src folder. Validate that the cognito identifiers match the identifiers in the AWS Console
 
 ### I made a change to my API using amplify update API and now everything is broken
 
