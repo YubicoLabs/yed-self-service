@@ -351,6 +351,12 @@ More information can be found [here](#multi-region-purchase-orders--organization
 
 ## FAQs and Common Issues
 
+### Cancelling my Test Order
+
+It should be noted that orders made through the YED API are made **directly** on your production inventory. YED does not currently support "sandbox" environments with fake data/inventory. During testing and development it is crucial that you not only delete orders directly from this application, but you must login to the YED Console to verify the order was removed, and to delete any lingering test shipments - Otherwise, your order will be processed and a key from your inventory will be shipped.
+
+Orders are not processed for shipment until **3AM PST** - So ensure your developers/testers are instructed to delete their shipments prior to closing their work day. This time is centrally configured across YED and **cannot be edited**.
+
 ### My Initial Build Failed
 
 It's been noted that the initial build will occasionally fail if a secret value was not provided to the service. If you get an error on your initial run, try running the **amplify push** command one more time. If the issue persists then please open an Issue on this repository so that the cause can be investigated.
