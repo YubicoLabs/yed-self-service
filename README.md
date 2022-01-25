@@ -208,11 +208,21 @@ If the Amplify CLI detects an Amplify project in your directory, you only need t
      - yedselfserviceex - YED_API_URL: https://api.console.yubico.com/v1
      - yedselfserviceex - DEFAULT_PRODUCT_ID: 5
    - **If your initial build fails, run the amplify push command another time**
-4. Your website is ready to use, now run the following command
+4. Your website is ready to use, now run the following command (in localhost)
 
 ```sh
 npm start
 ```
+
+5. If you wish to deploy the application to the web run
+
+```sh
+amplify publish
+```
+
+This will give you a public facing URL to test in a live environment
+
+**Caution** - If you receive a 403 Error while attempting to open your application, please see this section [below](#im-getting-a-403-error-after-i-publish-my-application)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -360,6 +370,19 @@ Orders are not processed for shipment until **3AM PST** - So ensure your develop
 ### My Initial Build Failed
 
 It's been noted that the initial build will occasionally fail if a secret value was not provided to the service. If you get an error on your initial run, try running the **amplify push** command one more time. If the issue persists then please open an Issue on this repository so that the cause can be investigated.
+
+### I'm Getting a 403 Error After I Publish my Application
+
+Occasionally after a deployment you may receive a 403 Error (Access Denied) when attempting to use your application.
+
+If this occurs, please follow the steps below
+
+1. In AWS go to the Amplify Portal - Then find your Amplify App
+2. In the settings panel on the side, choose **Rewrites and redirects**
+3. Click on the Edit button
+4. Create a new rule with the [following criteria ](https://docs.aws.amazon.com/amplify/latest/userguide/redirects.html#redirects-for-single-page-web-apps-spa)
+5. Click Save
+6. Test your application
 
 ### Multi-Region Purchase Orders / Organizations
 
