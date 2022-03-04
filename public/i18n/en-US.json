@@ -1,69 +1,70 @@
 {
-    "order": {
-      "delivery": "Delivery",
-      "payment": "Payment",
-      "validate-address": "Validate Address",
-      "confirmation": "Confirmation",
-      "order-history": "Order History",
-      "shippingAddress": "Shipping Address",
-      "continue": "Continue",
-      "previous": "Previous",
-      "clear": "Clear",
-      "item": "Your key:",
-      "loading": "Verifying Address",
-      "edit-order": "Order ID: ",
-      "setting-order": "Setting up your order"
-    },
-    "key-default": {
-      "getting-key": "Hold tight, we're grabbing your key"
-    },
-    "address": {
-      "firstName": "First Name",
-      "lastName": "Last Name",
-      "addressLine1": "Address Line 1",
-      "addressLine2": "Address Line 2",
-      "city": "City",
-      "provinceState": "Province/State",
-      "country": "Country",
-      "zipPostalCode": "Zip/Postal Code"
-    },
-    "address-validate": {
-      "loading": "We are verifying your address",
-      "success": "Address Validated - Press Continue to review your order",
-      "error": "Your address is not valid - Return to the previous screen to correct"
-    },
-    "checkout": {
-      "delivery": "Delivery",
-      "confirmation": "Confirmation",
-      "shippingAddress": "Shipping Address",
-      "continue": "Continue",
-      "previous": "Previous",
-      "clear": "Clear",
-      "customer-name": "Name",
-      "place-order": "Place Order",
-      "edit-order": "Edit Order",
-      "correct-address": "Edit Address",
-      "order-submit": "Hold tight while we place your order!"
-    },
-    "order-history": {
-      "title": "Your order history",
-      "order-placed": "Order Placed",
-      "ship-to": "Ship To",
-      "order-number": "Order #",
-      "track-package": "Track Package",
-      "order-arrived": "Your shipment arrived",
-      "edit-shipment": "Edit Shipment",
-      "track-your-package": "Track your package",
-      "delete-order": "Delete Order",
-      "sure-delete": "Are you sure you want to delete order #",
-      "close": "Close",
-      "no-order": "Sorry, it doesn't seem you have any orders"
-    },
-    "errorMessages": {
-      "required": "{{- fieldName}} is required",
-      "tooLong": "Too long, max length is {{max}}",
-      "tooShort": "Too short, min length is {{min}}",
-      "invalidFormat": "Invalid Format"
-    }
+  "order": {
+    "delivery": "Delivery",
+    "payment": "Payment",
+    "validate-address": "Validate Address",
+    "confirmation": "Confirmation",
+    "order-history": "Order History",
+    "shippingAddress": "Shipping Address",
+    "continue": "Continue",
+    "previous": "Previous",
+    "clear": "Clear",
+    "item": "Your key:",
+    "loading": "Verifying Address",
+    "edit-order": "Order ID: ",
+    "setting-order": "Setting up your order"
+  },
+  "key-default": {
+    "getting-key": "Hold tight, we're grabbing your key"
+  },
+  "address": {
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "addressLine1": "Address Line 1",
+    "addressLine2": "Address Line 2",
+    "city": "City",
+    "provinceState": "Province/State",
+    "country": "Country",
+    "zipPostalCode": "Zip/Postal Code",
+    "phoneNumber": "Phone Number"
+  },
+  "address-validate": {
+    "loading": "We are verifying your address",
+    "success": "Address Validated - Press Continue to review your order",
+    "error": "Your address is not valid - Return to the previous screen to correct"
+  },
+  "checkout": {
+    "delivery": "Delivery",
+    "confirmation": "Confirmation",
+    "shippingAddress": "Shipping Address",
+    "continue": "Continue",
+    "previous": "Previous",
+    "clear": "Clear",
+    "customer-name": "Name",
+    "customer-phone": "Phone Number",
+    "place-order": "Place Order",
+    "edit-order": "Edit Order",
+    "correct-address": "Edit Address",
+    "order-submit": "Hold tight while we place your order!"
+  },
+  "order-history": {
+    "title": "Your order history",
+    "order-placed": "Order Placed",
+    "ship-to": "Ship To",
+    "order-number": "Order #",
+    "track-package": "Track Package",
+    "order-arrived": "Your shipment arrived",
+    "edit-shipment": "Edit Shipment",
+    "track-your-package": "Track your package",
+    "delete-order": "Delete Order",
+    "sure-delete": "Are you sure you want to delete order #",
+    "close": "Close",
+    "no-order": "Sorry, it doesn't seem you have any orders"
+  },
+  "errorMessages": {
+    "required": "{{- fieldName}} is required",
+    "tooLong": "Too long, max length is {{max}}",
+    "tooShort": "Too short, min length is {{min}}",
+    "invalidFormat": "Invalid Format"
   }
-  
+}

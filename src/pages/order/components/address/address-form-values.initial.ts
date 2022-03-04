@@ -9,4 +9,5 @@ export const initialAddressFormValues: AddressFormValues = {
   provinceState: "",
   country: "",
   zipPostalCode: "",
+  phoneNumber: "",
 };

@@ -109,6 +109,17 @@ export const AddressForm: FunctionComponent<AddressFormProps> = ({
           fullWidth
         />
       </Grid>
+      <Grid item xs={12} sm={12}>
+        <Field
+          component={TextField}
+          label={t("address.phoneNumber")}
+          name={`${formName}.phoneNumber`}
+          variant="outlined"
+          error={touched?.phoneNumber && !!errors?.phoneNumber}
+          helperText={touched?.phoneNumber && errors?.phoneNumber}
+          fullWidth
+        />
+      </Grid>
     </Grid>
   );
 };
