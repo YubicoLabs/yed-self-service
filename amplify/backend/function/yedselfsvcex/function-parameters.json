@@ -10,13 +10,9 @@
       "environmentVariableName": "YED_API_URL"
     }
   ],
-<<<<<<< HEAD
-  "secretNames": [
-    "YED_API_TOKEN"
-  ],
-=======
-  "secretNames": ["YED_API_TOKEN", "YED_COOKIE"],
->>>>>>> 27da279fe80b8ccb21a87a929139c65b58e23036
+
+  "secretNames": ["YED_API_TOKEN"],
+
   "permissions": {
     "storage": {
       "yedselfsvcdb": ["create", "read", "update", "delete"]

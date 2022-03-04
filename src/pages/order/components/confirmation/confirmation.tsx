@@ -1,29 +1,29 @@
-import React, { FunctionComponent, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
+import React, { FunctionComponent, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { connect } from "react-redux";
 
-import { AddressFormValues } from '../address/address-form-values.interface';
-import { KeyDefaultValues } from '../key-default/key-default-values.interface';
+import { AddressFormValues } from "../address/address-form-values.interface";
+import { KeyDefaultValues } from "../key-default/key-default-values.interface";
 
-import { OrderStepper } from '../order-stepper/order-stepper';
+import { OrderStepper } from "../order-stepper/order-stepper";
 
-import { ConfirmationProps, mapStateToProps } from './confirmation.props';
-import { AppRoutePath } from '../../../../routes/app-route-path';
-import { OrderRoutePath } from '../../routes/order-route-path';
-import { useHistory } from 'react-router-dom';
+import { ConfirmationProps, mapStateToProps } from "./confirmation.props";
+import { AppRoutePath } from "../../../../routes/app-route-path";
+import { OrderRoutePath } from "../../routes/order-route-path";
+import { useHistory } from "react-router-dom";
 
-import { Typography, Button, CircularProgress } from '@material-ui/core';
-import Stack from '@mui/material/Stack';
-import { Box } from '@mui/system';
-import Card from '@mui/material/Card';
-import { CardContent, CardMedia } from '@mui/material';
+import { Typography, Button, CircularProgress } from "@material-ui/core";
+import Stack from "@mui/material/Stack";
+import { Box } from "@mui/system";
+import Card from "@mui/material/Card";
+import { CardContent, CardMedia } from "@mui/material";
 
-import { API, Auth } from 'aws-amplify';
-import invConfig from '../../../../inv-config';
+import { API, Auth } from "aws-amplify";
+import invConfig from "../../../../inv-config";
 
 /**
  * Function Component to render the address information the user has entered for their order
- * @param address The address values that will be displayed on the confirmation page 
+ * @param address The address values that will be displayed on the confirmation page
  * @returns The component to render a users address
  */
 const AddressDisplay: FunctionComponent<{ address: AddressFormValues }> = ({
@@ -32,50 +32,54 @@ const AddressDisplay: FunctionComponent<{ address: AddressFormValues }> = ({
   const { t } = useTranslation();
   return (
     <Stack spacing={1}>
-      <Typography variant='h6'>{t('checkout.customer-name') + ': '}</Typography>
-      <Typography variant='body2'>
+      <Typography variant="h6">{t("checkout.customer-name") + ": "}</Typography>
+      <Typography variant="body2">
         {address.firstName} {address.lastName}
       </Typography>
-      <Typography variant='h6'>
-        {t('checkout.shippingAddress') + ': '}
+      <Typography variant="h6">
+        {t("checkout.shippingAddress") + ": "}
       </Typography>
-      <Typography variant='body2'>
-        {address.addressLine1}{' '}
+      <Typography variant="body2">
+        {address.addressLine1}{" "}
         {address.addressLine2 && (
           <>
             {address.addressLine2} <br />
           </>
         )}
       </Typography>
-      <Typography variant='body2'>
-        {address.city}, {address.provinceState} {address.country}{' '}
+      <Typography variant="body2">
+        {address.city}, {address.provinceState} {address.country}{" "}
         {address.zipPostalCode}
       </Typography>
+      <Typography variant="h6">
+        {t("checkout.customer-phone") + ": "}
+      </Typography>
+      <Typography variant="body2">{address.phoneNumber}</Typography>
     </Stack>
   );
 };
 
 /**
  * Used to render information for the key selected by the user
- * @param keyDefault The inventory item the user has selected 
+ * @param keyDefault The inventory item the user has selected
  * @returns The component to render a users "cart" containing their selected keys
  */
 const KeyDisplay: FunctionComponent<{ keyDefault: KeyDefaultValues }> = ({
   keyDefault,
 }) => {
   return (
-    <Box sx={{ justifyContent: 'center' }}>
-      <Card sx={{ display: 'flex', maxWidth: 500 }}>
+    <Box sx={{ justifyContent: "center" }}>
+      <Card sx={{ display: "flex", maxWidth: 500 }}>
         <CardMedia
-          component='img'
+          component="img"
           sx={{ width: 151 }}
           image={keyImageLocation(keyDefault.product_name)}></CardMedia>
-        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-          <CardContent sx={{ flex: '1 0 auto' }}>
-            <Typography component='div' variant='h5'>
+        <Box sx={{ display: "flex", flexDirection: "column" }}>
+          <CardContent sx={{ flex: "1 0 auto" }}>
+            <Typography component="div" variant="h5">
               {keyDefault.product_name}
             </Typography>
-            <Typography component='div' variant='subtitle1'>
+            <Typography component="div" variant="subtitle1">
               {keyCustomDescription(keyDefault.product_name)}
             </Typography>
           </CardContent>
@@ -88,7 +92,7 @@ const KeyDisplay: FunctionComponent<{ keyDefault: KeyDefaultValues }> = ({
 /**
  * Calls to the invConfig file to pull out the image location for an inventory item
  * @param prodName Product Name, the name of the product as found in the GET /products API
- * @returns a string containing the image location to reference 
+ * @returns a string containing the image location to reference
  */
 const keyImageLocation = (prodName: string): string => {
   return invConfig[prodName].imageLocation;
@@ -97,7 +101,7 @@ const keyImageLocation = (prodName: string): string => {
 /**
  * Calls to the invConfig file to pull out the custom description for an inventory item
  * @param prodName Product Name, the name of the product as found in the GET /products API
- * @returns a string containing the custom description to reference 
+ * @returns a string containing the custom description to reference
  */
 const keyCustomDescription = (prodName: string): string => {
   return invConfig[prodName].customDescription;
@@ -117,7 +121,7 @@ export const Confirmation: FunctionComponent<ConfirmationProps> = ({
 
   //Flag to determine if the user has selected a key, if not then the component will redirect the user to Key Default to select a key
   const [hasKey] = useState(keyDefault.product_id !== 0);
-  
+
   if (!hasKey) {
     history.push(AppRoutePath.Order + OrderRoutePath.KeyDefault);
   }
@@ -134,13 +138,13 @@ export const Confirmation: FunctionComponent<ConfirmationProps> = ({
       delivery_type: 1,
       country_code_2: deliveryForm.shippingAddress.country,
       recipient: `${deliveryForm.shippingAddress.firstName} ${deliveryForm.shippingAddress.lastName}`,
-      recipient_email: '',
+      recipient_email: "",
       recipient_firstname: deliveryForm.shippingAddress.firstName,
       recipient_lastname: deliveryForm.shippingAddress.lastName,
-      recipient_telephone: '',
+      recipient_telephone: deliveryForm.shippingAddress.phoneNumber,
       street_line1: deliveryForm.shippingAddress.addressLine1,
       street_line2: deliveryForm.shippingAddress.addressLine2,
-      street_line3: '',
+      street_line3: "",
       city: deliveryForm.shippingAddress.city,
       region: deliveryForm.shippingAddress.provinceState,
       postal_code: deliveryForm.shippingAddress.zipPostalCode,
@@ -154,8 +158,8 @@ export const Confirmation: FunctionComponent<ConfirmationProps> = ({
     };
 
     const token = (await Auth.currentSession()).getIdToken().getJwtToken();
-    const apiName = 'yedselfsvcex';
-    const path = '/order/create';
+    const apiName = "yedselfsvcex";
+    const path = "/order/create";
     const myInit = {
       body: postBody,
       headers: {
@@ -181,13 +185,13 @@ export const Confirmation: FunctionComponent<ConfirmationProps> = ({
       delivery_type: 1,
       country_code_2: deliveryForm.shippingAddress.country,
       recipient: `${deliveryForm.shippingAddress.firstName} ${deliveryForm.shippingAddress.lastName}`,
-      recipient_email: '',
+      recipient_email: "",
       recipient_firstname: deliveryForm.shippingAddress.firstName,
       recipient_lastname: deliveryForm.shippingAddress.lastName,
-      recipient_telephone: '',
+      recipient_telephone: deliveryForm.shippingAddress.phoneNumber,
       street_line1: deliveryForm.shippingAddress.addressLine1,
       street_line2: deliveryForm.shippingAddress.addressLine2,
-      street_line3: '',
+      street_line3: "",
       city: deliveryForm.shippingAddress.city,
       region: deliveryForm.shippingAddress.provinceState,
       postal_code: deliveryForm.shippingAddress.zipPostalCode,
@@ -201,7 +205,7 @@ export const Confirmation: FunctionComponent<ConfirmationProps> = ({
     };
 
     const token = (await Auth.currentSession()).getIdToken().getJwtToken();
-    const apiName = 'yedselfsvcex';
+    const apiName = "yedselfsvcex";
     const path = `/order/${editOrderId}`;
     const myInit = {
       body: postBody,
@@ -222,7 +226,7 @@ export const Confirmation: FunctionComponent<ConfirmationProps> = ({
   const editAddress = () => {
     history.push(AppRoutePath.Order + OrderRoutePath.Delivery);
   };
-  
+
   return (
     <>
       {!hasKey && <></>}
@@ -233,84 +237,84 @@ export const Confirmation: FunctionComponent<ConfirmationProps> = ({
             <Box
               mt={4}
               sx={{
-                display: 'grid',
-                gridTemplateRows: 'repeat(1, 1fr)',
-                justifyContent: 'center',
-                alignItems: 'center',
+                display: "grid",
+                gridTemplateRows: "repeat(1, 1fr)",
+                justifyContent: "center",
+                alignItems: "center",
               }}>
-              {formAction === 'edit' && (
+              {formAction === "edit" && (
                 <>
-                  <Typography variant='h4' component='legend' gutterBottom>
-                    {t('order.edit-order')}
+                  <Typography variant="h4" component="legend" gutterBottom>
+                    {t("order.edit-order")}
                   </Typography>
-                  <Typography variant='h5' component='legend' gutterBottom>
+                  <Typography variant="h5" component="legend" gutterBottom>
                     {editOrderId}
                   </Typography>
                 </>
               )}
-              <Typography variant='h4' component='legend' gutterBottom>
-                {t('order.item')}
+              <Typography variant="h4" component="legend" gutterBottom>
+                {t("order.item")}
               </Typography>
               <KeyDisplay keyDefault={keyDefault} />
               <Box mt={3}>
-                <Typography variant='h4' gutterBottom>
-                  {t('checkout.shippingAddress')}
+                <Typography variant="h4" gutterBottom>
+                  {t("checkout.shippingAddress")}
                 </Typography>
                 <AddressDisplay address={deliveryForm.shippingAddress} />
               </Box>
               <Box
                 sx={{
-                  display: 'grid',
-                  gridAutoColumns: '1fr',
+                  display: "grid",
+                  gridAutoColumns: "1fr",
                   gap: 1,
-                  alignItems: 'center',
+                  alignItems: "center",
                 }}
                 mt={3}>
-                <Box sx={{ gridRow: '1', gridColumn: 'span 1' }}>
+                <Box sx={{ gridRow: "1", gridColumn: "span 1" }}>
                   <Button
-                    type='reset'
-                    variant='contained'
-                    size='small'
+                    type="reset"
+                    variant="contained"
+                    size="small"
                     onClick={editAddress}>
-                    {t('checkout.correct-address')}
+                    {t("checkout.correct-address")}
                   </Button>
                 </Box>
-                {formAction === 'edit' && (
+                {formAction === "edit" && (
                   <>
                     <>
                       <Box
                         sx={{
-                          gridRow: '1',
-                          gridColumn: 'span 1',
-                          textAlign: 'right',
+                          gridRow: "1",
+                          gridColumn: "span 1",
+                          textAlign: "right",
                         }}>
                         <Button
-                          type='button'
-                          variant='contained'
-                          color='primary'
-                          size='large'
+                          type="button"
+                          variant="contained"
+                          color="primary"
+                          size="large"
                           onClick={editOrder}>
-                          {t('checkout.edit-order')}
+                          {t("checkout.edit-order")}
                         </Button>
                       </Box>
                     </>
                   </>
                 )}
-                {formAction === 'create' && (
+                {formAction === "create" && (
                   <>
                     <Box
                       sx={{
-                        gridRow: '1',
-                        gridColumn: 'span 1',
-                        textAlign: 'right',
+                        gridRow: "1",
+                        gridColumn: "span 1",
+                        textAlign: "right",
                       }}>
                       <Button
-                        type='button'
-                        variant='contained'
-                        color='primary'
-                        size='large'
+                        type="button"
+                        variant="contained"
+                        color="primary"
+                        size="large"
                         onClick={submitOrder}>
-                        {t('checkout.place-order')}
+                        {t("checkout.place-order")}
                       </Button>
                     </Box>
                   </>
@@ -322,17 +326,17 @@ export const Confirmation: FunctionComponent<ConfirmationProps> = ({
             <Box
               mt={4}
               sx={{
-                display: 'grid',
-                gridTemplateRows: 'repeat(1, 1fr)',
-                justifyContent: 'center',
-                alignItems: 'center',
-                textAlign: 'center',
+                display: "grid",
+                gridTemplateRows: "repeat(1, 1fr)",
+                justifyContent: "center",
+                alignItems: "center",
+                textAlign: "center",
               }}>
-              <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+              <Box sx={{ display: "flex", justifyContent: "center" }}>
                 <CircularProgress />
               </Box>
-              <Typography variant='h6' gutterBottom>
-                {t('checkout.order-submit')}
+              <Typography variant="h6" gutterBottom>
+                {t("checkout.order-submit")}
               </Typography>
             </Box>
           )}

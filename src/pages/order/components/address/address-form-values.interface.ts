@@ -7,4 +7,5 @@ export interface AddressFormValues {
   provinceState: string;
   country: string;
   zipPostalCode: string;
+  phoneNumber: string;
 }

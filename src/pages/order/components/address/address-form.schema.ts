@@ -40,5 +40,8 @@ export const addressFormSchema = (t: TFunction) => {
       )
       .min(5, t("errorMessages.tooShort", { min: 5 }))
       .max(7, t("errorMessages.tooLong", { max: 7 })),
+    phoneNumber: string().required(
+      t("errorMessages.required", { fieldName: t("address.phoneNumber") })
+    ),
   });
 };
